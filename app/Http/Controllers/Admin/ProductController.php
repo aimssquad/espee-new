@@ -9,83 +9,97 @@ use App\Models\Subcategory;
 use App\Models\Shape;
 use App\Models\Color;
 use App\Models\ProductVariant;
+use App\Models\ProductImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::with(['category', 'subcategory', 'shape', 'variants'])
+        $query = Product::with(['category', 'subcategory', 'shape', 'variants'])
             ->withCount('variants')
-            ->paginate(10);
-            
+            ->orderBy('created_at', 'desc');
+
+        // Search functionality
+        if ($request->has('search') && !empty($request->search)) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('model_no', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%")
+                  ->orWhere('gender', 'like', "%{$search}%")
+                  ->orWhereHas('category', function($q) use ($search) {
+                      $q->where('name', 'like', "%{$search}%");
+                  })
+                  ->orWhereHas('subcategory', function($q) use ($search) {
+                      $q->where('name', 'like', "%{$search}%");
+                  })
+                  ->orWhereHas('shape', function($q) use ($search) {
+                      $q->where('name', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        $products = $query->paginate(50);
+
+        if ($request->ajax()) {
+            return response()->json([
+                'html' => view('admin.products.partials.products-table', compact('products'))->render(),
+                'pagination' => $products->links()->render()
+            ]);
+        }
+
         return view('admin.products.index', compact('products'));
     }
 
     public function create()
     {
-        $categories = Category::pluck('name', 'id');
-        $subcategories = Subcategory::pluck('name', 'id');
-        $shapes = Shape::pluck('name', 'id');
+        $categories = Category::all();
+        $subcategories = Subcategory::all();
+        $shapes = Shape::all();
         $colors = Color::all();
-        
-        return view('admin.products.create', compact('categories', 'subcategories', 'shapes', 'colors'));
+        $genderOptions = Product::getGenderOptions();
+
+        return view('admin.products.create', compact('categories', 'subcategories', 'shapes', 'colors', 'genderOptions'));
     }
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'category_id' => 'required|exists:categories,id',
-            'subcategory_id' => 'nullable|exists:subcategories,id',
-            'shape_id' => 'nullable|exists:shapes,id',
-            'name' => 'required|string|max:255',
-            'model_no' => 'required|string|unique:products',
-            'description' => 'nullable|string',
-            'base_price' => 'required|numeric|min:0',
-            'variants' => 'required|array|min:1',
-            'variants.*.sku' => 'required|string|unique:product_variants,sku',
-            'variants.*.color_id' => 'required|exists:colors,id',
-            'variants.*.price' => 'required|numeric|min:0',
-            'variants.*.stock' => 'required|integer|min:0',
-            'variants.*.image' => 'nullable|image|max:2048',
-        ]);
+        try {
+            $validated = $request->validate([
+                'category_id' => 'required|exists:categories,id',
+                'subcategory_id' => 'nullable|exists:subcategories,id',
+                'shape_id' => 'nullable|exists:shapes,id',
+                'gender' => 'required|in:men,women,unisex',
+                'name' => 'required|string|max:255',
+                'model_no' => 'required|string|unique:products',
+                'description' => 'nullable|string',
+                'base_price' => 'required|numeric|min:0',
+            ]);
 
-        DB::transaction(function () use ($validated, $request) {
             $product = Product::create($validated);
 
-            foreach ($request->variants as $variantData) {
-                $variant = [
-                    'product_id' => $product->id,
-                    'sku' => $variantData['sku'],
-                    'color_id' => $variantData['color_id'],
-                    'price' => $variantData['price'],
-                    'stock' => $variantData['stock'],
-                ];
-
-                if (isset($variantData['image'])) {
-                    $path = $variantData['image']->store('products', 'public');
-                    $variant['image'] = $path;
-                }
-
-                ProductVariant::create($variant);
-            }
-        });
-
-        return redirect()->route('admin.products.index')
-            ->with('success', 'Product created successfully.');
+            return redirect()->route('admin.products.variants', $product)
+                ->with('success', 'Product created successfully. Now add variants for this product.');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Error creating product: ' . $e->getMessage());
+        }
     }
 
     public function edit(Product $product)
     {
-        $categories = Category::pluck('name', 'id');
-        $subcategories = Subcategory::pluck('name', 'id');
-        $shapes = Shape::pluck('name', 'id');
+        $categories = Category::all();
+        $subcategories = Subcategory::all();
+        $shapes = Shape::all();
         $colors = Color::all();
+        $genderOptions = Product::getGenderOptions();
         $product->load('variants.color');
-        
-        return view('admin.products.edit', compact('product', 'categories', 'subcategories', 'shapes', 'colors'));
+
+        return view('admin.products.edit', compact('product', 'categories', 'subcategories', 'shapes', 'colors', 'genderOptions'));
     }
 
     public function update(Request $request, Product $product)
@@ -94,6 +108,7 @@ class ProductController extends Controller
             'category_id' => 'required|exists:categories,id',
             'subcategory_id' => 'nullable|exists:subcategories,id',
             'shape_id' => 'nullable|exists:shapes,id',
+            'gender' => 'required|in:men,women,unisex',
             'name' => 'required|string|max:255',
             'model_no' => 'required|string|unique:products,model_no,' . $product->id,
             'description' => 'nullable|string',
@@ -123,9 +138,9 @@ class ProductController extends Controller
 
     public function variants(Product $product)
     {
-        $product->load('variants.color');
+        $product->load(['variants.color', 'variants.images']);
         $colors = Color::all();
-        
+
         return view('admin.products.variants', compact('product', 'colors'));
     }
 
@@ -136,16 +151,26 @@ class ProductController extends Controller
             'color_id' => 'required|exists:colors,id',
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
-            'image' => 'nullable|image|max:2048',
+            'images.*' => 'nullable|image|max:2048',
         ]);
 
         $validated['product_id'] = $product->id;
 
-        if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('products', 'public');
-        }
+        $variant = ProductVariant::create($validated);
 
-        ProductVariant::create($validated);
+        // Handle multiple images
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $index => $image) {
+                $imagePath = $image->store('products', 'public');
+
+                \App\Models\ProductImage::create([
+                    'product_variant_id' => $variant->id,
+                    'image_path' => $imagePath,
+                    'sort_order' => $index,
+                    'is_primary' => $index === 0, // First image is primary
+                ]);
+            }
+        }
 
         return redirect()->route('admin.products.variants', $product)
             ->with('success', 'Variant added successfully.');
@@ -158,18 +183,31 @@ class ProductController extends Controller
             'color_id' => 'required|exists:colors,id',
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
-            'image' => 'nullable|image|max:2048',
+            'images.*' => 'nullable|image|max:2048',
         ]);
 
-        if ($request->hasFile('image')) {
-            // Delete old image
-            if ($variant->image) {
-                Storage::disk('public')->delete($variant->image);
-            }
-            $validated['image'] = $request->file('image')->store('products', 'public');
-        }
-
         $variant->update($validated);
+
+        // Handle multiple images
+        if ($request->hasFile('images')) {
+            // Delete existing images
+            foreach ($variant->images as $image) {
+                Storage::disk('public')->delete($image->image_path);
+                $image->delete();
+            }
+
+            // Add new images
+            foreach ($request->file('images') as $index => $image) {
+                $imagePath = $image->store('products', 'public');
+
+                \App\Models\ProductImage::create([
+                    'product_variant_id' => $variant->id,
+                    'image_path' => $imagePath,
+                    'sort_order' => $index,
+                    'is_primary' => $index === 0, // First image is primary
+                ]);
+            }
+        }
 
         return redirect()->route('admin.products.variants', $product)
             ->with('success', 'Variant updated successfully.');
@@ -177,13 +215,35 @@ class ProductController extends Controller
 
     public function deleteVariant(Product $product, ProductVariant $variant)
     {
-        if ($variant->image) {
-            Storage::disk('public')->delete($variant->image);
+        // Delete all associated images
+        foreach ($variant->images as $image) {
+            Storage::disk('public')->delete($image->image_path);
         }
 
         $variant->delete();
 
         return redirect()->route('admin.products.variants', $product)
             ->with('success', 'Variant deleted successfully.');
+    }
+
+    public function deleteImage(ProductImage $image)
+    {
+        Storage::disk('public')->delete($image->image_path);
+        $image->delete();
+
+        return response()->json(['success' => true]);
+    }
+
+    public function setPrimaryImage(ProductImage $image)
+    {
+        // Remove primary status from other images of the same variant
+        ProductImage::where('product_variant_id', $image->product_variant_id)
+            ->where('id', '!=', $image->id)
+            ->update(['is_primary' => false]);
+
+        // Set this image as primary
+        $image->update(['is_primary' => true]);
+
+        return response()->json(['success' => true]);
     }
 }

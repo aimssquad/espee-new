@@ -167,6 +167,76 @@ class ProductSeeder extends Seeder
                 'description' => 'Limited edition designer square frames.',
                 'base_price' => 299.99,
                 'shape' => 'Square'
+            ],
+            [
+                'name' => 'Wayfarer Classic Pro',
+                'model_no' => 'ESP-WF-021',
+                'description' => 'Iconic wayfarer sunglasses with premium lenses.',
+                'base_price' => 229.99,
+                'shape' => 'Wayfarer'
+            ],
+            [
+                'name' => 'Clubmaster Elite',
+                'model_no' => 'ESP-CM-022',
+                'description' => 'Sophisticated clubmaster style with metal accents.',
+                'base_price' => 199.99,
+                'shape' => 'Clubmaster'
+            ],
+            [
+                'name' => 'Browline Executive',
+                'model_no' => 'ESP-BE-023',
+                'description' => 'Professional browline frames for business settings.',
+                'base_price' => 179.99,
+                'shape' => 'Browline'
+            ],
+            [
+                'name' => 'Oversized Glamour',
+                'model_no' => 'ESP-OG-024',
+                'description' => 'Dramatic oversized frames for maximum style impact.',
+                'base_price' => 189.99,
+                'shape' => 'Oversized'
+            ],
+            [
+                'name' => 'Sport Endurance',
+                'model_no' => 'ESP-SE-025',
+                'description' => 'High-performance sport sunglasses for athletes.',
+                'base_price' => 249.99,
+                'shape' => 'Sport'
+            ],
+            [
+                'name' => 'Vintage Heritage',
+                'model_no' => 'ESP-VH-026',
+                'description' => 'Classic vintage-inspired frames with modern comfort.',
+                'base_price' => 169.99,
+                'shape' => 'Vintage'
+            ],
+            [
+                'name' => 'Computer Vision Pro',
+                'model_no' => 'ESP-CVP-027',
+                'description' => 'Blue light blocking frames for digital eye strain relief.',
+                'base_price' => 159.99,
+                'shape' => 'Rectangle'
+            ],
+            [
+                'name' => 'Reading Comfort Plus',
+                'model_no' => 'ESP-RCP-028',
+                'description' => 'Comfortable reading glasses with progressive lenses.',
+                'base_price' => 129.99,
+                'shape' => 'Oval'
+            ],
+            [
+                'name' => 'Kids Adventure',
+                'model_no' => 'ESP-KA-029',
+                'description' => 'Durable and fun frames designed for active kids.',
+                'base_price' => 89.99,
+                'shape' => 'Round'
+            ],
+            [
+                'name' => 'Luxury Gold Edition',
+                'model_no' => 'ESP-LGE-030',
+                'description' => 'Premium gold-plated frames for special occasions.',
+                'base_price' => 399.99,
+                'shape' => 'Square'
             ]
         ];
 
@@ -174,7 +244,7 @@ class ProductSeeder extends Seeder
         foreach ($sunglassesProducts as $productData) {
             $shape = $shapes->where('name', $productData['shape'])->first();
             $subcategory = $sunglassesCategory->subcategories->random();
-            
+
             $product = Product::create([
                 'category_id' => $sunglassesCategory->id,
                 'subcategory_id' => $subcategory->id,
@@ -188,12 +258,12 @@ class ProductSeeder extends Seeder
             // Create 5-10 variants for each product
             $variantCount = rand(5, 10);
             $selectedColors = $colors->random($variantCount);
-            
+
             foreach ($selectedColors as $index => $color) {
                 $priceVariation = rand(-20, 30); // Price can vary ±$20-30 from base
                 $price = $product->base_price + $priceVariation;
                 $stock = rand(0, 50); // Random stock between 0-50
-                
+
                 ProductVariant::create([
                     'product_id' => $product->id,
                     'sku' => $product->model_no . '-' . strtoupper(substr($color->name, 0, 3)) . '-' . ($index + 1),
@@ -209,7 +279,7 @@ class ProductSeeder extends Seeder
         foreach ($framesProducts as $productData) {
             $shape = $shapes->where('name', $productData['shape'])->first();
             $subcategory = $framesCategory->subcategories->random();
-            
+
             $product = Product::create([
                 'category_id' => $framesCategory->id,
                 'subcategory_id' => $subcategory->id,
@@ -223,12 +293,12 @@ class ProductSeeder extends Seeder
             // Create 5-10 variants for each product
             $variantCount = rand(5, 10);
             $selectedColors = $colors->random($variantCount);
-            
+
             foreach ($selectedColors as $index => $color) {
                 $priceVariation = rand(-15, 25); // Price can vary ±$15-25 from base
                 $price = $product->base_price + $priceVariation;
                 $stock = rand(0, 40); // Random stock between 0-40
-                
+
                 ProductVariant::create([
                     'product_id' => $product->id,
                     'sku' => $product->model_no . '-' . strtoupper(substr($color->name, 0, 3)) . '-' . ($index + 1),

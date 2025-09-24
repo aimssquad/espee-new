@@ -24,9 +24,14 @@ class CategoryController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:categories',
+            'image' => 'nullable|image|max:2048',
         ]);
 
         $validated['slug'] = Str::slug($validated['name']);
+
+        if ($request->hasFile('image')) {
+            $validated['image'] = $request->file('image')->store('categories', 'public');
+        }
 
         Category::create($validated);
 
@@ -43,9 +48,18 @@ class CategoryController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:categories,name,' . $category->id,
+            'image' => 'nullable|image|max:2048',
         ]);
 
         $validated['slug'] = Str::slug($validated['name']);
+
+        if ($request->hasFile('image')) {
+            // Delete old image if exists
+            if ($category->image && \Storage::disk('public')->exists($category->image)) {
+                \Storage::disk('public')->delete($category->image);
+            }
+            $validated['image'] = $request->file('image')->store('categories', 'public');
+        }
 
         $category->update($validated);
 

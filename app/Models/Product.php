@@ -15,6 +15,7 @@ class Product extends Model
         'category_id',
         'subcategory_id',
         'shape_id',
+        'gender',
         'name',
         'model_no',
         'description',
@@ -69,11 +70,25 @@ class Product extends Model
     {
         $min = $this->min_price;
         $max = $this->max_price;
-        
+
         if ($min == $max) {
             return '$' . number_format($min, 2);
         }
-        
+
         return '$' . number_format($min, 2) . ' - $' . number_format($max, 2);
+    }
+
+    public static function getGenderOptions()
+    {
+        return [
+            'men' => 'Men',
+            'women' => 'Women',
+            'unisex' => 'Unisex'
+        ];
+    }
+
+    public function getGenderLabelAttribute()
+    {
+        return self::getGenderOptions()[$this->gender] ?? $this->gender;
     }
 }

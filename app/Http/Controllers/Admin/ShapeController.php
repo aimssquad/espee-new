@@ -23,7 +23,12 @@ class ShapeController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:shapes',
+            'image' => 'nullable|image|max:2048',
         ]);
+
+        if ($request->hasFile('image')) {
+            $validated['image'] = $request->file('image')->store('shapes', 'public');
+        }
 
         Shape::create($validated);
 
@@ -40,7 +45,16 @@ class ShapeController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:shapes,name,' . $shape->id,
+            'image' => 'nullable|image|max:2048',
         ]);
+
+        if ($request->hasFile('image')) {
+            // Delete old image if exists
+            if ($shape->image && \Storage::disk('public')->exists($shape->image)) {
+                \Storage::disk('public')->delete($shape->image);
+            }
+            $validated['image'] = $request->file('image')->store('shapes', 'public');
+        }
 
         $shape->update($validated);
 

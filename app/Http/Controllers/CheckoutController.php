@@ -5,15 +5,18 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\ProductVariant;
+use App\Models\Coupon;
+use App\Models\PaymentMethod;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class CheckoutController extends Controller
 {
     public function index()
     {
         $cart = session()->get('cart', []);
-        
+
         if (empty($cart)) {
             return redirect()->route('cart.index')
                 ->with('error', 'Your cart is empty.');
@@ -34,7 +37,9 @@ class CheckoutController extends Controller
             }
         }
 
-        return view('checkout.index', compact('cartItems', 'total'));
+        $paymentMethods = PaymentMethod::active()->ordered()->get();
+
+        return view('checkout.index', compact('cartItems', 'total', 'paymentMethods'));
     }
 
     public function process(Request $request)
@@ -43,11 +48,17 @@ class CheckoutController extends Controller
             'customer_name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'phone' => 'required|string|max:20',
-            'address' => 'required|string'
+            'address' => 'required|string',
+            'city' => 'nullable|string|max:100',
+            'state' => 'nullable|string|max:100',
+            'pincode' => 'nullable|string|max:10',
+            'payment_method' => 'required|string',
+            'coupon_code' => 'nullable|string',
+            'notes' => 'nullable|string'
         ]);
 
         $cart = session()->get('cart', []);
-        
+
         if (empty($cart)) {
             return redirect()->route('cart.index')
                 ->with('error', 'Your cart is empty.');
@@ -57,20 +68,20 @@ class CheckoutController extends Controller
 
         try {
             // Calculate total
-            $total = 0;
+            $subtotal = 0;
             $orderItems = [];
 
             foreach ($cart as $variantId => $item) {
                 $variant = ProductVariant::lockForUpdate()->find($variantId);
-                
+
                 if (!$variant || $variant->stock < $item['quantity']) {
                     DB::rollBack();
                     return redirect()->route('cart.index')
                         ->with('error', 'Some products are out of stock.');
                 }
 
-                $subtotal = $variant->price * $item['quantity'];
-                $total += $subtotal;
+                $itemSubtotal = $variant->price * $item['quantity'];
+                $subtotal += $itemSubtotal;
 
                 $orderItems[] = [
                     'variant' => $variant,
@@ -79,14 +90,41 @@ class CheckoutController extends Controller
                 ];
             }
 
+            // Apply coupon if provided
+            $discountAmount = 0;
+            $couponId = null;
+
+            if (!empty($validated['coupon_code'])) {
+                $coupon = Coupon::where('code', $validated['coupon_code'])->first();
+                if ($coupon && $coupon->isValid()) {
+                    $discountAmount = $coupon->calculateDiscount($subtotal);
+                    $couponId = $coupon->id;
+                }
+            }
+
+            $totalAmount = $subtotal - $discountAmount;
+
+            // Generate order number
+            $orderNumber = 'ESP-' . strtoupper(Str::random(8));
+
             // Create order
             $order = Order::create([
+                'order_number' => $orderNumber,
                 'customer_name' => $validated['customer_name'],
                 'email' => $validated['email'],
                 'phone' => $validated['phone'],
                 'address' => $validated['address'],
-                'total_amount' => $total,
-                'status' => 'pending'
+                'city' => $validated['city'],
+                'state' => $validated['state'],
+                'pincode' => $validated['pincode'],
+                'subtotal' => $subtotal,
+                'discount_amount' => $discountAmount,
+                'total_amount' => $totalAmount,
+                'payment_method' => $validated['payment_method'],
+                'payment_status' => $validated['payment_method'] === 'cod' ? 'pending' : 'pending',
+                'coupon_id' => $couponId,
+                'status' => 'pending',
+                'notes' => $validated['notes']
             ]);
 
             // Create order items and update stock
@@ -100,6 +138,12 @@ class CheckoutController extends Controller
 
                 // Decrease stock
                 $item['variant']->decrement('stock', $item['quantity']);
+            }
+
+            // Increment coupon usage if applied
+            if ($couponId) {
+                $coupon = Coupon::find($couponId);
+                $coupon->incrementUsage();
             }
 
             DB::commit();
@@ -120,7 +164,7 @@ class CheckoutController extends Controller
     public function success(Order $order)
     {
         $order->load('items.productVariant.product', 'items.productVariant.color');
-        
+
         return view('checkout.success', compact('order'));
     }
 }

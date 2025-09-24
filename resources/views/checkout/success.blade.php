@@ -1,125 +1,139 @@
 @extends('layouts.app')
 
-@section('title', 'Order Confirmation')
+@section('title', 'Order Confirmation - Espee')
 
 @section('content')
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-lg-8">
             <div class="text-center mb-5">
-                <i class="fas fa-check-circle text-success" style="font-size: 4rem;"></i>
-                <h1 class="mt-3">Thank You for Your Order!</h1>
-                <p class="lead text-muted">Your order has been successfully placed.</p>
-            </div>
-
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h5 class="card-title">Order Details</h5>
-                    <hr>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <p class="mb-1"><strong>Order Number:</strong> #{{ str_pad($order->id, 6, '0', STR_PAD_LEFT) }}</p>
-                            <p class="mb-1"><strong>Date:</strong> {{ $order->created_at->format('F j, Y g:i A') }}</p>
-                            <p class="mb-1"><strong>Status:</strong> {!! $order->status_badge !!}</p>
-                        </div>
-                        <div class="col-md-6">
-                            <p class="mb-1"><strong>Total Amount:</strong> ${{ number_format($order->total_amount, 2) }}</p>
-                            <p class="mb-1"><strong>Payment Method:</strong> Cash on Delivery</p>
-                            <p class="mb-1"><strong>Estimated Delivery:</strong> {{ now()->addDays(5)->format('F j, Y') }}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h5 class="card-title">Shipping Information</h5>
-                    <hr>
-                    <p class="mb-1"><strong>{{ $order->customer_name }}</strong></p>
-                    <p class="mb-1">{{ $order->email }}</p>
-                    <p class="mb-1">{{ $order->phone }}</p>
-                    <p class="mb-0">{{ nl2br(e($order->address)) }}</p>
-                </div>
-            </div>
-
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h5 class="card-title">Order Items</h5>
-                    <hr>
-                    <div class="table-responsive">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Product</th>
-                                    <th class="text-center">Quantity</th>
-                                    <th class="text-end">Price</th>
-                                    <th class="text-end">Subtotal</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($order->items as $item)
-                                <tr>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <img src="{{ $item->productVariant->image_url }}" 
-                                                 alt="{{ $item->productVariant->product->name }}"
-                                                 class="me-3" style="width: 60px; height: 60px; object-fit: cover;">
-                                            <div>
-                                                <h6 class="mb-0">{{ $item->productVariant->product->name }}</h6>
-                                                <small class="text-muted">
-                                                    Color: {{ $item->productVariant->color->name }}<br>
-                                                    SKU: {{ $item->productVariant->sku }}
-                                                </small>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="text-center align-middle">{{ $item->quantity }}</td>
-                                    <td class="text-end align-middle">${{ number_format($item->price, 2) }}</td>
-                                    <td class="text-end align-middle">${{ number_format($item->subtotal, 2) }}</td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <td colspan="3" class="text-end"><strong>Total:</strong></td>
-                                    <td class="text-end"><strong>${{ number_format($order->total_amount, 2) }}</strong></td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                </div>
+                <i class="fas fa-check-circle fa-4x text-success mb-4"></i>
+                <h2>Order Confirmed!</h2>
+                <p class="text-muted">Thank you for your order. We'll send you a confirmation email shortly.</p>
             </div>
 
             <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">Order Details</h6>
+                </div>
                 <div class="card-body">
-                    <h5 class="card-title">What's Next?</h5>
-                    <hr>
-                    <ul class="mb-0">
-                        <li>You will receive an order confirmation email shortly.</li>
-                        <li>We will notify you when your order is shipped.</li>
-                        <li>You can track your order status by contacting our customer service.</li>
-                        <li>If you have any questions, please don't hesitate to contact us.</li>
-                    </ul>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>Order Number:</strong> {{ $order->order_number }}
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Order Date:</strong> {{ $order->created_at->format('M d, Y') }}
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>Customer:</strong> {{ $order->customer_name }}
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Email:</strong> {{ $order->email }}
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>Phone:</strong> {{ $order->phone }}
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Status:</strong>
+                            <span class="badge bg-warning">{{ ucfirst($order->status) }}</span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <strong>Shipping Address:</strong>
+                        <p class="mb-0">{{ $order->address }}</p>
+                        @if($order->city)
+                            <p class="mb-0">{{ $order->city }}, {{ $order->state }} {{ $order->pincode }}</p>
+                        @endif
+                    </div>
                 </div>
             </div>
 
-            <div class="text-center mt-4">
-                <a href="{{ route('products.index') }}" class="btn btn-dark">
-                    Continue Shopping
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h6 class="mb-0">Order Items</h6>
+                </div>
+                <div class="card-body">
+                    @foreach($order->items as $item)
+                    <div class="row align-items-center mb-3">
+                        <div class="col-md-2">
+                            @if($item->productVariant->image)
+                                <img src="{{ $item->productVariant->image_url }}" class="img-fluid rounded" alt="{{ $item->productVariant->product->name }}" style="height: 60px; object-fit: cover;">
+                            @else
+                                <img src="https://via.placeholder.com/60x60/000000/FFFFFF?text={{ urlencode($item->productVariant->product->name) }}" class="img-fluid rounded" alt="{{ $item->productVariant->product->name }}" style="height: 60px; object-fit: cover;">
+                            @endif
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="mb-1">{{ $item->productVariant->product->name }}</h6>
+                            <p class="text-muted small mb-0">{{ $item->productVariant->product->model_no }}</p>
+                            <p class="text-muted small">Color: {{ $item->productVariant->color->name }}</p>
+                        </div>
+                        <div class="col-md-2">
+                            <span class="text-muted">Qty: {{ $item->quantity }}</span>
+                        </div>
+                        <div class="col-md-2">
+                            <strong>${{ number_format($item->price * $item->quantity, 2) }}</strong>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+
+            <div class="card mt-4">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Subtotal:</span>
+                                <span>${{ number_format($order->subtotal, 2) }}</span>
+                            </div>
+                            @if($order->discount_amount > 0)
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Discount:</span>
+                                <span>-${{ number_format($order->discount_amount, 2) }}</span>
+                            </div>
+                            @endif
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Shipping:</span>
+                                <span>Free</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Tax:</span>
+                                <span>$0.00</span>
+                            </div>
+                            <hr>
+                            <div class="d-flex justify-content-between">
+                                <strong>Total:</strong>
+                                <strong>${{ number_format($order->total_amount, 2) }}</strong>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="text-end">
+                                <p class="mb-2"><strong>Payment Method:</strong> {{ ucfirst($order->payment_method) }}</p>
+                                <p class="mb-0"><strong>Payment Status:</strong>
+                                    <span class="badge bg-warning">{{ ucfirst($order->payment_status) }}</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-5">
+                <a href="{{ route('products.index') }}" class="btn btn-primary me-3">
+                    <i class="fas fa-shopping-bag me-2"></i>Continue Shopping
                 </a>
-                <button onclick="window.print()" class="btn btn-outline-dark ms-2">
-                    <i class="fas fa-print me-2"></i>Print Order
-                </button>
+                <a href="{{ route('home') }}" class="btn btn-outline-primary">
+                    <i class="fas fa-home me-2"></i>Back to Home
+                </a>
             </div>
         </div>
     </div>
 </div>
-
-<style>
-@media print {
-    .navbar, .footer, .btn {
-        display: none !important;
-    }
-}
-</style>
 @endsection

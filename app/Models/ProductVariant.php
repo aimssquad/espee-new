@@ -40,12 +40,41 @@ class ProductVariant extends Model
         return $this->hasMany(OrderItem::class);
     }
 
+    public function images(): HasMany
+    {
+        return $this->hasMany(ProductImage::class)->ordered();
+    }
+
+    public function primaryImage()
+    {
+        return $this->hasOne(ProductImage::class)->where('is_primary', true);
+    }
+
+    public function getMainImageAttribute()
+    {
+        return $this->primaryImage ?? $this->images()->first();
+    }
+
     public function getImageUrlAttribute()
     {
+        // First try to get primary image from new images system
+        if ($this->images()->count() > 0) {
+            $primaryImage = $this->images()->where('is_primary', true)->first();
+            if ($primaryImage) {
+                return $primaryImage->image_url;
+            }
+            // If no primary image, get first image
+            $firstImage = $this->images()->first();
+            if ($firstImage) {
+                return $firstImage->image_url;
+            }
+        }
+
+        // Fallback to old single image system
         if ($this->image && file_exists(public_path('storage/' . $this->image))) {
             return asset('storage/' . $this->image);
         }
-        
+
         // Return placeholder image
         return 'https://via.placeholder.com/600x400/000000/FFFFFF?text=' . urlencode($this->product->name);
     }

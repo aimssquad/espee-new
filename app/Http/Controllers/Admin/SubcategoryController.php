@@ -18,7 +18,7 @@ class SubcategoryController extends Controller
 
     public function create()
     {
-        $categories = Category::pluck('name', 'id');
+        $categories = Category::all();
         return view('admin.subcategories.create', compact('categories'));
     }
 
@@ -27,9 +27,14 @@ class SubcategoryController extends Controller
         $validated = $request->validate([
             'category_id' => 'required|exists:categories,id',
             'name' => 'required|string|max:255|unique:subcategories',
+            'image' => 'nullable|image|max:2048',
         ]);
 
         $validated['slug'] = Str::slug($validated['name']);
+
+        if ($request->hasFile('image')) {
+            $validated['image'] = $request->file('image')->store('subcategories', 'public');
+        }
 
         Subcategory::create($validated);
 
@@ -39,7 +44,7 @@ class SubcategoryController extends Controller
 
     public function edit(Subcategory $subcategory)
     {
-        $categories = Category::pluck('name', 'id');
+        $categories = Category::all();
         return view('admin.subcategories.edit', compact('subcategory', 'categories'));
     }
 
@@ -48,9 +53,18 @@ class SubcategoryController extends Controller
         $validated = $request->validate([
             'category_id' => 'required|exists:categories,id',
             'name' => 'required|string|max:255|unique:subcategories,name,' . $subcategory->id,
+            'image' => 'nullable|image|max:2048',
         ]);
 
         $validated['slug'] = Str::slug($validated['name']);
+
+        if ($request->hasFile('image')) {
+            // Delete old image if exists
+            if ($subcategory->image && \Storage::disk('public')->exists($subcategory->image)) {
+                \Storage::disk('public')->delete($subcategory->image);
+            }
+            $validated['image'] = $request->file('image')->store('subcategories', 'public');
+        }
 
         $subcategory->update($validated);
 

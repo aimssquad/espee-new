@@ -18,7 +18,13 @@ class ShapeSeeder extends Seeder
             'Aviator',
             'Cat Eye',
             'Rectangle',
-            'Oval'
+            'Oval',
+            'Wayfarer',
+            'Clubmaster',
+            'Browline',
+            'Oversized',
+            'Sport',
+            'Vintage'
         ];
 
         foreach ($shapes as $shape) {

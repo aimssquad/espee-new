@@ -18,6 +18,7 @@
                 <thead>
                     <tr>
                         <th>ID</th>
+                        <th>Image</th>
                         <th>Name</th>
                         <th>Slug</th>
                         <th>Products</th>
@@ -29,6 +30,17 @@
                     @foreach($categories as $category)
                     <tr>
                         <td>{{ $category->id }}</td>
+                        <td>
+                            @if($category->image)
+                                <img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }}"
+                                     class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover;">
+                            @else
+                                <div class="bg-light d-flex align-items-center justify-content-center"
+                                     style="width: 50px; height: 50px;">
+                                    <i class="fas fa-image text-muted"></i>
+                                </div>
+                            @endif
+                        </td>
                         <td>{{ $category->name }}</td>
                         <td>{{ $category->slug }}</td>
                         <td>{{ $category->products_count }}</td>
@@ -40,7 +52,7 @@
                             <form action="{{ route('admin.categories.destroy', $category) }}" method="POST" class="d-inline">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-outline-danger" 
+                                <button type="submit" class="btn btn-sm btn-outline-danger"
                                         onclick="return confirm('Are you sure?')">
                                     Delete
                                 </button>

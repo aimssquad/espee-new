@@ -1,164 +1,179 @@
 @extends('layouts.app')
 
-@section('title', $product->name)
+@section('title', $product->name . ' - Espee')
 
 @section('content')
 <div class="container py-5">
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-            <li class="breadcrumb-item"><a href="{{ route('products.index') }}">Products</a></li>
-            <li class="breadcrumb-item"><a href="{{ route('products.index', ['category' => $product->category->slug]) }}">{{ $product->category->name }}</a></li>
-            <li class="breadcrumb-item active">{{ $product->name }}</li>
-        </ol>
-    </nav>
-
     <div class="row">
-        <!-- Product Images -->
         <div class="col-lg-6">
-            <div class="product-images">
-                <div class="main-image mb-3">
-                    <img id="main-product-image" 
-                         src="{{ $product->defaultVariant() ? $product->defaultVariant()->image_url : 'https://via.placeholder.com/600x400/000000/FFFFFF?text=' . urlencode($product->name) }}" 
-                         class="img-fluid" alt="{{ $product->name }}">
-                </div>
-                <div class="variant-thumbnails d-flex gap-2 flex-wrap">
+            <!-- Product Images -->
+            <div id="product-carousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner" id="main-carousel">
+                    @php $imageIndex = 0; @endphp
                     @foreach($product->variants as $variant)
-                    <div class="thumbnail-item" data-variant-id="{{ $variant->id }}">
-                        <img src="{{ $variant->image_url }}" 
-                             class="img-thumbnail variant-thumbnail" 
-                             alt="{{ $product->name }} - {{ $variant->color->name }}"
-                             style="width: 80px; height: 80px; object-fit: cover; cursor: pointer;">
-                    </div>
+                        @if($variant->images->count() > 0)
+                            @foreach($variant->images as $image)
+                                <div class="carousel-item {{ $imageIndex === 0 ? 'active' : '' }}" data-variant-id="{{ $variant->id }}">
+                                    <img src="{{ $image->image_url }}" class="d-block w-100" alt="{{ $product->name }}" style="height: 500px; object-fit: cover;">
+                                </div>
+                                @php $imageIndex++; @endphp
+                            @endforeach
+                        @else
+                            <div class="carousel-item {{ $imageIndex === 0 ? 'active' : '' }}" data-variant-id="{{ $variant->id }}">
+                                <img src="{{ $variant->image_url }}" class="d-block w-100" alt="{{ $product->name }}" style="height: 500px; object-fit: cover;">
+                            </div>
+                            @php $imageIndex++; @endphp
+                        @endif
+                    @endforeach
+                </div>
+                @if($imageIndex > 1)
+                <button class="carousel-control-prev" type="button" data-bs-target="#product-carousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon"></span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#product-carousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon"></span>
+                </button>
+                @endif
+            </div>
+
+            <!-- Image Thumbnails -->
+            <div class="mt-3">
+                <div class="d-flex flex-wrap gap-2" id="image-thumbnails">
+                    @php $thumbIndex = 0; @endphp
+                    @foreach($product->variants as $variant)
+                        @if($variant->images->count() > 0)
+                            @foreach($variant->images as $image)
+                                <img src="{{ $image->image_url }}"
+                                     class="img-thumbnail {{ $thumbIndex === 0 ? 'active' : '' }}"
+                                     style="width: 60px; height: 60px; object-fit: cover; cursor: pointer;"
+                                     data-bs-target="#product-carousel"
+                                     data-bs-slide-to="{{ $thumbIndex }}"
+                                     alt="{{ $product->name }}">
+                                @php $thumbIndex++; @endphp
+                            @endforeach
+                        @else
+                            <img src="{{ $variant->image_url }}"
+                                 class="img-thumbnail {{ $thumbIndex === 0 ? 'active' : '' }}"
+                                 style="width: 60px; height: 60px; object-fit: cover; cursor: pointer;"
+                                 data-bs-target="#product-carousel"
+                                 data-bs-slide-to="{{ $thumbIndex }}"
+                                 alt="{{ $product->name }}">
+                            @php $thumbIndex++; @endphp
+                        @endif
                     @endforeach
                 </div>
             </div>
-        </div>
 
-        <!-- Product Details -->
-        <div class="col-lg-6">
-            <h1 class="h2 mb-2">{{ $product->name }}</h1>
-            <p class="text-muted mb-4">Model: {{ $product->model_no }}</p>
-            
-            <div class="price-section mb-4">
-                <h3 id="product-price" class="mb-0">{{ $product->price_range }}</h3>
-            </div>
-
-            @if($product->description)
-            <div class="description-section mb-4">
-                <h5>Description</h5>
-                <p>{{ $product->description }}</p>
+            <!-- Color Variants -->
+            @if($product->variants->count() > 1)
+            <div class="mt-3">
+                <h6>Available Colors:</h6>
+                <div class="d-flex flex-wrap gap-2">
+                    @foreach($product->variants as $variant)
+                    <button class="btn btn-outline-secondary color-variant"
+                            data-variant-id="{{ $variant->id }}"
+                            data-price="{{ $variant->price }}"
+                            data-images="{{ $variant->images->pluck('image_url')->toJson() }}"
+                            data-image="{{ $variant->image_url }}"
+                            style="width: 40px; height: 40px; background-color: {{ $variant->color->hex_code }}; border-radius: 50%;">
+                    </button>
+                    @endforeach
+                </div>
             </div>
             @endif
+        </div>
 
-            <form id="add-to-cart-form">
-                @csrf
-                <!-- Color Selection -->
-                <div class="mb-4">
-                    <h5 class="mb-3">Select Color</h5>
-                    <div class="color-selection d-flex gap-2 flex-wrap">
-                        @foreach($product->variants as $variant)
-                        <label class="color-option">
-                            <input type="radio" name="variant_id" value="{{ $variant->id }}" 
-                                   class="variant-radio" 
-                                   data-price="{{ $variant->price }}"
-                                   data-stock="{{ $variant->stock }}"
-                                   data-image="{{ $variant->image_url }}"
-                                   data-color="{{ $variant->color->name }}"
-                                   {{ $loop->first ? 'checked' : '' }}>
-                            <span class="color-swatch-large" 
-                                  style="background-color: {{ $variant->color->hex_code }}"
-                                  title="{{ $variant->color->name }}"></span>
-                            <span class="color-name">{{ $variant->color->name }}</span>
-                        </label>
-                        @endforeach
-                    </div>
-                </div>
+        <div class="col-lg-6">
+            <h2>{{ $product->name }}</h2>
+            <p class="text-muted">{{ $product->model_no }}</p>
 
-                <!-- Stock Status -->
-                <div class="mb-4">
-                    <p id="stock-status" class="mb-0">
-                        <span class="badge bg-success">In Stock</span>
-                        <small class="text-muted ms-2">(<span id="stock-count">0</span> available)</small>
-                    </p>
-                </div>
+            <div class="price mb-3">
+                <span id="current-price" class="h4">${{ number_format($product->variants->first()->price ?? $product->base_price, 2) }}</span>
+            </div>
 
-                <!-- Quantity -->
-                <div class="mb-4">
-                    <h5 class="mb-3">Quantity</h5>
-                    <div class="d-flex align-items-center">
-                        <button type="button" class="btn btn-outline-dark" id="qty-decrease">-</button>
-                        <input type="number" name="quantity" id="quantity" value="1" min="1" 
-                               class="form-control mx-2 text-center" style="width: 80px;">
-                        <button type="button" class="btn btn-outline-dark" id="qty-increase">+</button>
-                    </div>
-                </div>
+            <div class="mb-4">
+                <h6>Description</h6>
+                <p>{{ $product->description }}</p>
+            </div>
 
-                <!-- Add to Cart Button -->
-                <div class="mb-4">
-                    <button type="submit" class="btn btn-dark btn-lg w-100" id="add-to-cart-btn">
-                        <i class="fas fa-shopping-cart me-2"></i>Add to Cart
-                    </button>
-                </div>
-            </form>
-
-            <!-- Product Features -->
-            <div class="product-features">
-                <h5 class="mb-3">Features</h5>
+            <div class="mb-4">
+                <h6>Specifications</h6>
                 <ul class="list-unstyled">
-                    <li><i class="fas fa-check me-2"></i>100% UV Protection</li>
-                    <li><i class="fas fa-check me-2"></i>Premium Quality Materials</li>
-                    <li><i class="fas fa-check me-2"></i>1 Year Warranty</li>
-                    <li><i class="fas fa-check me-2"></i>Free Shipping</li>
+                    <li><strong>Category:</strong> {{ $product->category->name }}</li>
+                    @if($product->subcategory)
+                        <li><strong>Subcategory:</strong> {{ $product->subcategory->name }}</li>
+                    @endif
+                    @if($product->shape)
+                        <li><strong>Shape:</strong> {{ $product->shape->name }}</li>
+                    @endif
                 </ul>
             </div>
 
-            <!-- Product Details Table -->
-            <div class="product-details-table mt-4">
-                <h5 class="mb-3">Specifications</h5>
-                <table class="table table-sm">
-                    <tr>
-                        <td class="fw-bold">Category</td>
-                        <td>{{ $product->category->name }}</td>
-                    </tr>
-                    @if($product->subcategory)
-                    <tr>
-                        <td class="fw-bold">Subcategory</td>
-                        <td>{{ $product->subcategory->name }}</td>
-                    </tr>
-                    @endif
-                    @if($product->shape)
-                    <tr>
-                        <td class="fw-bold">Shape</td>
-                        <td>{{ $product->shape->name }}</td>
-                    </tr>
-                    @endif
-                    <tr>
-                        <td class="fw-bold">Available Colors</td>
-                        <td>{{ $product->variants->count() }}</td>
-                    </tr>
-                </table>
+            <!-- Add to Cart Form -->
+            <form id="add-to-cart-form">
+                @csrf
+                <input type="hidden" name="variant_id" id="selected-variant" value="{{ $product->variants->first()->id ?? '' }}">
+
+                <div class="row mb-3">
+                    <div class="col-4">
+                        <label for="quantity" class="form-label">Quantity</label>
+                        <input type="number" class="form-control" id="quantity" name="quantity" value="1" min="1" max="{{ $product->variants->first()->stock ?? 0 }}">
+                    </div>
+                    <div class="col-8">
+                        <label class="form-label">Stock</label>
+                        <div id="stock-info" class="form-control-plaintext">
+                            {{ $product->variants->first()->stock ?? 0 }} available
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-lg w-100" id="add-to-cart-btn">
+                    <i class="fas fa-shopping-cart me-2"></i>Add to Cart
+                </button>
+            </form>
+
+            <!-- Product Features -->
+            <div class="mt-5">
+                <div class="row text-center">
+                    <div class="col-4">
+                        <i class="fas fa-shipping-fast fa-2x text-primary mb-2"></i>
+                        <p class="small">Free Shipping</p>
+                    </div>
+                    <div class="col-4">
+                        <i class="fas fa-undo fa-2x text-primary mb-2"></i>
+                        <p class="small">Easy Returns</p>
+                    </div>
+                    <div class="col-4">
+                        <i class="fas fa-shield-alt fa-2x text-primary mb-2"></i>
+                        <p class="small">Warranty</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Related Products -->
     @if($relatedProducts->count() > 0)
-    <div class="related-products mt-5">
-        <h3 class="mb-4">You May Also Like</h3>
-        <div class="row g-4">
+    <div class="mt-5">
+        <h4>Related Products</h4>
+        <div class="row">
             @foreach($relatedProducts as $relatedProduct)
-            <div class="col-lg-3 col-md-4 col-sm-6">
-                <div class="product-card h-100">
-                    <a href="{{ route('products.show', $relatedProduct) }}" class="text-decoration-none text-dark">
-                        <img src="{{ $relatedProduct->defaultVariant() ? $relatedProduct->defaultVariant()->image_url : 'https://via.placeholder.com/600x400/000000/FFFFFF?text=' . urlencode($relatedProduct->name) }}" 
-                             class="card-img-top" alt="{{ $relatedProduct->name }}">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ $relatedProduct->name }}</h5>
-                            <p class="text-muted mb-2">{{ $relatedProduct->model_no }}</p>
-                            <p class="price mb-0">{{ $relatedProduct->price_range }}</p>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="card product-card h-100">
+                    @if($relatedProduct->defaultVariant() && $relatedProduct->defaultVariant()->image)
+                        <img src="{{ $relatedProduct->defaultVariant()->image_url }}" class="card-img-top" alt="{{ $relatedProduct->name }}" style="height: 200px; object-fit: cover;">
+                    @else
+                        <img src="https://via.placeholder.com/300x200/000000/FFFFFF?text={{ urlencode($relatedProduct->name) }}" class="card-img-top" alt="{{ $relatedProduct->name }}" style="height: 200px; object-fit: cover;">
+                    @endif
+                    <div class="card-body d-flex flex-column">
+                        <h6 class="card-title">{{ $relatedProduct->name }}</h6>
+                        <div class="price mb-3">
+                            {{ $relatedProduct->price_range }}
                         </div>
-                    </a>
+                        <div class="mt-auto">
+                            <a href="{{ route('products.show', $relatedProduct) }}" class="btn btn-outline-primary btn-sm w-100">View Details</a>
+                        </div>
+                    </div>
                 </div>
             </div>
             @endforeach
@@ -166,151 +181,124 @@
     </div>
     @endif
 </div>
-
-<style>
-.product-images .main-image {
-    background-color: #f8f9fa;
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-.variant-thumbnail {
-    transition: opacity 0.3s ease;
-}
-
-.variant-thumbnail:hover {
-    opacity: 0.8;
-}
-
-.color-option {
-    position: relative;
-    cursor: pointer;
-}
-
-.color-option input[type="radio"] {
-    position: absolute;
-    opacity: 0;
-}
-
-.color-swatch-large {
-    display: inline-block;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    border: 3px solid #e0e0e0;
-    transition: all 0.3s ease;
-}
-
-.color-option input[type="radio"]:checked + .color-swatch-large {
-    transform: scale(1.1);
-    border-color: #000;
-    box-shadow: 0 0 0 2px #fff, 0 0 0 4px #000;
-}
-
-.color-name {
-    display: block;
-    text-align: center;
-    font-size: 12px;
-    margin-top: 5px;
-}
-
-.product-features li {
-    padding: 0.25rem 0;
-}
-</style>
 @endsection
 
 @push('scripts')
 <script>
 $(document).ready(function() {
-    let maxStock = {{ $product->defaultVariant() ? $product->defaultVariant()->stock : 0 }};
-    
-    // Update product details when variant is selected
-    $('.variant-radio').on('change', function() {
+    // Color variant selection
+    $('.color-variant').on('click', function() {
+        $('.color-variant').removeClass('btn-primary').addClass('btn-outline-secondary');
+        $(this).removeClass('btn-outline-secondary').addClass('btn-primary');
+
+        const variantId = $(this).data('variant-id');
         const price = $(this).data('price');
-        const stock = $(this).data('stock');
+        const images = $(this).data('images');
         const image = $(this).data('image');
-        const color = $(this).data('color');
-        
-        // Update price
-        $('#product-price').text('$' + parseFloat(price).toFixed(2));
-        
-        // Update main image
-        $('#main-product-image').attr('src', image);
-        
-        // Update stock status
-        maxStock = stock;
-        $('#stock-count').text(stock);
-        
-        if (stock > 0) {
-            $('#stock-status').html('<span class="badge bg-success">In Stock</span> <small class="text-muted ms-2">(' + stock + ' available)</small>');
-            $('#add-to-cart-btn').prop('disabled', false);
-            $('#quantity').attr('max', stock).val(1);
+
+        $('#selected-variant').val(variantId);
+        $('#current-price').text('$' + parseFloat(price).toFixed(2));
+
+        // Update carousel with multiple images
+        if (images && images.length > 0) {
+            updateCarouselWithImages(images);
         } else {
-            $('#stock-status').html('<span class="badge bg-danger">Out of Stock</span>');
-            $('#add-to-cart-btn').prop('disabled', true);
+            // Fallback to single image
+            $('.carousel-item.active img').attr('src', image);
         }
+
+        // Update stock info
+        updateStockInfo(variantId);
     });
-    
-    // Quantity controls
-    $('#qty-decrease').on('click', function() {
-        const currentQty = parseInt($('#quantity').val());
-        if (currentQty > 1) {
-            $('#quantity').val(currentQty - 1);
-        }
-    });
-    
-    $('#qty-increase').on('click', function() {
-        const currentQty = parseInt($('#quantity').val());
-        if (currentQty < maxStock) {
-            $('#quantity').val(currentQty + 1);
-        }
-    });
-    
-    $('#quantity').on('change', function() {
-        const qty = parseInt($(this).val());
-        if (qty < 1) {
-            $(this).val(1);
-        } else if (qty > maxStock) {
-            $(this).val(maxStock);
-        }
-    });
-    
-    // Thumbnail click
-    $('.variant-thumbnail').on('click', function() {
-        const variantId = $(this).closest('.thumbnail-item').data('variant-id');
-        $('input[name="variant_id"][value="' + variantId + '"]').prop('checked', true).trigger('change');
-    });
-    
+
+    function updateCarouselWithImages(images) {
+        const carouselInner = $('#main-carousel');
+        const thumbnails = $('#image-thumbnails');
+
+        // Clear existing carousel items
+        carouselInner.empty();
+        thumbnails.empty();
+
+        // Add new carousel items
+        images.forEach((imageUrl, index) => {
+            const isActive = index === 0 ? 'active' : '';
+            const carouselItem = `
+                <div class="carousel-item ${isActive}">
+                    <img src="${imageUrl}" class="d-block w-100" alt="{{ $product->name }}" style="height: 500px; object-fit: cover;">
+                </div>
+            `;
+            carouselInner.append(carouselItem);
+
+            // Add thumbnail
+            const thumbnail = `
+                <img src="${imageUrl}"
+                     class="img-thumbnail ${isActive}"
+                     style="width: 60px; height: 60px; object-fit: cover; cursor: pointer;"
+                     data-bs-target="#product-carousel"
+                     data-bs-slide-to="${index}"
+                     alt="{{ $product->name }}">
+            `;
+            thumbnails.append(thumbnail);
+        });
+
+        // Reinitialize carousel
+        $('#product-carousel').carousel('dispose').carousel();
+    }
+
     // Add to cart
     $('#add-to-cart-form').on('submit', function(e) {
         e.preventDefault();
-        
-        const variantId = $('input[name="variant_id"]:checked').val();
-        const quantity = $('#quantity').val();
-        
+
+        const formData = $(this).serialize();
+
         $.ajax({
             url: '{{ route("cart.add") }}',
-            type: 'POST',
-            data: {
-                variant_id: variantId,
-                quantity: quantity
-            },
+            method: 'POST',
+            data: formData,
             success: function(response) {
                 if (response.success) {
-                    showToast(response.message, 'success');
-                    updateCartCount(response.cart_count);
+                    // Show success message
+                    showToast('success', response.message);
+
+                    // Update cart count
+                    $('#cart-count').text(response.cart_count);
+                } else {
+                    showToast('error', response.message);
                 }
             },
             error: function(xhr) {
                 const response = xhr.responseJSON;
-                showToast(response.message || 'An error occurred', 'error');
+                showToast('error', response.message || 'Error adding to cart');
             }
         });
     });
-    
-    // Trigger initial variant selection
-    $('.variant-radio:checked').trigger('change');
+
+    function updateStockInfo(variantId) {
+        // This would typically make an AJAX call to get stock info
+        // For now, we'll just show a placeholder
+        $('#stock-info').text('Stock information loading...');
+    }
+
+    function showToast(type, message) {
+        // Create toast notification
+        const toast = $(`
+            <div class="toast align-items-center text-white bg-${type === 'success' ? 'success' : 'danger'} border-0" role="alert">
+                <div class="d-flex">
+                    <div class="toast-body">${message}</div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+            </div>
+        `);
+
+        $('body').append(toast);
+        const bsToast = new bootstrap.Toast(toast[0]);
+        bsToast.show();
+
+        // Remove toast after it's hidden
+        toast.on('hidden.bs.toast', function() {
+            $(this).remove();
+        });
+    }
 });
 </script>
 @endpush

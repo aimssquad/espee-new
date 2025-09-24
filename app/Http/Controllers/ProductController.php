@@ -13,7 +13,7 @@ class ProductController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Product::with('variants.color', 'category', 'subcategory', 'shape');
+        $query = Product::with(['variants.color', 'variants.images', 'category', 'subcategory', 'shape']);
 
         // Filter by category
         if ($request->filled('category')) {
@@ -107,9 +107,9 @@ class ProductController extends Controller
 
     public function show(Product $product)
     {
-        $product->load('variants.color', 'category', 'subcategory', 'shape');
-        
-        $relatedProducts = Product::with('variants.color')
+        $product->load(['variants.color', 'variants.images', 'category', 'subcategory', 'shape']);
+
+        $relatedProducts = Product::with(['variants.color', 'variants.images'])
             ->where('category_id', $product->category_id)
             ->where('id', '!=', $product->id)
             ->inRandomOrder()

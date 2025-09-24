@@ -132,8 +132,12 @@ class CartController extends Controller
     {
         session()->forget('cart');
 
-        return redirect()->route('cart.index')
-            ->with('success', 'Cart cleared successfully.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Cart cleared successfully.',
+            'cart_count' => 0,
+            'total' => '0.00'
+        ]);
     }
 
     private function calculateTotal()
