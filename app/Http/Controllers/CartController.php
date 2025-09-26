@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ProductVariant;
+use App\Models\TaxMaster;
 use Illuminate\Http\Request;
 
 class CartController extends Controller
@@ -11,21 +12,28 @@ class CartController extends Controller
     {
         $cart = session()->get('cart', []);
         $cartItems = [];
+        $subtotal = 0;
+        $totalTax = 0;
         $total = 0;
 
         foreach ($cart as $id => $item) {
-            $variant = ProductVariant::with('product', 'color')->find($id);
+            $variant = ProductVariant::with('product', 'color', 'images')->find($id);
             if ($variant) {
+                $itemSubtotal = $variant->price * $item['quantity'];
+
                 $cartItems[] = [
                     'variant' => $variant,
                     'quantity' => $item['quantity'],
-                    'subtotal' => $variant->price * $item['quantity']
+                    'subtotal' => $itemSubtotal
                 ];
-                $total += $variant->price * $item['quantity'];
+
+                $subtotal += $itemSubtotal;
             }
         }
 
-        return view('cart.index', compact('cartItems', 'total'));
+        $total = $subtotal;
+
+        return view('cart.index', compact('cartItems', 'subtotal', 'total'));
     }
 
     public function add(Request $request)
@@ -67,7 +75,7 @@ class CartController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Product added to cart successfully!',
+            'message' => 'Product added to cart successfully! 🛒',
             'cart_count' => count($cart)
         ]);
     }
@@ -96,12 +104,22 @@ class CartController extends Controller
             session()->put('cart', $cart);
         }
 
-        $subtotal = $variant->price * $request->quantity;
-        $total = $this->calculateTotal();
+        $cart = session()->get('cart', []);
+        $totalSubtotal = 0;
+
+        foreach ($cart as $id => $item) {
+            $variant = ProductVariant::with('product')->find($id);
+            if ($variant) {
+                $itemSubtotal = $variant->price * $item['quantity'];
+                $totalSubtotal += $itemSubtotal;
+            }
+        }
+
+        $total = $totalSubtotal;
 
         return response()->json([
             'success' => true,
-            'subtotal' => number_format($subtotal, 2),
+            'subtotal' => number_format($totalSubtotal, 2),
             'total' => number_format($total, 2)
         ]);
     }
@@ -119,11 +137,22 @@ class CartController extends Controller
             session()->put('cart', $cart);
         }
 
-        $total = $this->calculateTotal();
+        $totalSubtotal = 0;
+
+        foreach ($cart as $id => $item) {
+            $variant = ProductVariant::with('product')->find($id);
+            if ($variant) {
+                $itemSubtotal = $variant->price * $item['quantity'];
+                $totalSubtotal += $itemSubtotal;
+            }
+        }
+
+        $total = $totalSubtotal;
 
         return response()->json([
             'success' => true,
             'cart_count' => count($cart),
+            'subtotal' => number_format($totalSubtotal, 2),
             'total' => number_format($total, 2)
         ]);
     }
@@ -136,7 +165,18 @@ class CartController extends Controller
             'success' => true,
             'message' => 'Cart cleared successfully.',
             'cart_count' => 0,
+            'subtotal' => '0.00',
             'total' => '0.00'
+        ]);
+    }
+
+    public function count()
+    {
+        $cart = session()->get('cart', []);
+        $count = count($cart);
+
+        return response()->json([
+            'count' => $count
         ]);
     }
 

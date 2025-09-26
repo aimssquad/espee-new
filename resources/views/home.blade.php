@@ -20,12 +20,12 @@
                 @foreach($featuredCategories as $category)
                 <div class="col-md-6">
                     <div class="position-relative overflow-hidden" style="height: 400px;">
-                        <img src="https://via.placeholder.com/800x600/000000/FFFFFF?text={{ urlencode($category->name) }}" 
+                        <img src="https://via.placeholder.com/800x600/000000/FFFFFF?text={{ urlencode($category->name) }}"
                              class="w-100 h-100 object-fit-cover" alt="{{ $category->name }}">
-                        <div class="position-absolute bottom-0 start-0 end-0 p-4 text-white" 
+                        <div class="position-absolute bottom-0 start-0 end-0 p-4 text-white"
                              style="background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);">
                             <h3 class="mb-3">{{ strtoupper($category->name) }}</h3>
-                            <a href="{{ route('products.index', ['category' => $category->slug]) }}" 
+                            <a href="{{ route('products.index', ['category' => $category->slug]) }}"
                                class="btn btn-outline-light">EXPLORE COLLECTION</a>
                         </div>
                     </div>
@@ -44,7 +44,7 @@
                 <div class="col-lg-3 col-md-4 col-sm-6">
                     <div class="product-card h-100">
                         <a href="{{ route('products.show', $product) }}" class="text-decoration-none text-dark">
-                            <img src="{{ $product->defaultVariant() ? $product->defaultVariant()->image_url : 'https://via.placeholder.com/600x400/000000/FFFFFF?text=' . urlencode($product->name) }}" 
+                            <img src="{{ $product->main_image }}"
                                  class="card-img-top" alt="{{ $product->name }}">
                             <div class="card-body">
                                 <h5 class="card-title">{{ $product->name }}</h5>
@@ -53,7 +53,7 @@
                                 @if($product->variants->count() > 1)
                                 <div class="color-options">
                                     @foreach($product->variants->take(5) as $variant)
-                                    <span class="color-swatch" 
+                                    <span class="color-swatch"
                                           style="background-color: {{ $variant->color->hex_code }}"
                                           title="{{ $variant->color->name }}"></span>
                                     @endforeach

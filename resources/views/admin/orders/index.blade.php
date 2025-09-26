@@ -48,7 +48,7 @@
                         <td>{{ $order->customer_name }}</td>
                         <td>{{ $order->email }}</td>
                         <td>{{ $order->phone }}</td>
-                        <td>${{ number_format($order->total_amount, 2) }}</td>
+                        <td>₹{{ number_format($order->total_amount, 2) }}</td>
                         <td>{!! $order->status_badge !!}</td>
                         <td>{{ $order->created_at->format('M d, Y') }}</td>
                         <td>

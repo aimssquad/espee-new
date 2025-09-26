@@ -9,9 +9,14 @@
         <h2 class="h4 mb-0">Products Management</h2>
         <p class="text-muted mb-0">Manage your product catalog</p>
     </div>
-    <a href="{{ route('admin.products.create') }}" class="btn btn-primary">
-        <i class="fas fa-plus me-2"></i>Add Product
-    </a>
+    <div class="d-flex gap-2">
+        <a href="{{ route('admin.products.create') }}" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i>Add Product
+        </a>
+        <a href="{{ route('admin.excel-upload.index') }}" class="btn btn-success">
+            <i class="fas fa-file-excel me-2"></i>Excel Upload
+        </a>
+    </div>
 </div>
 
 <!-- Search and Filters -->
@@ -52,11 +57,14 @@
         </div>
 
         <!-- Pagination -->
-        <div class="d-flex justify-content-between align-items-center p-3 border-top">
-            <div class="text-muted small">
-                Showing {{ $products->firstItem() ?? 0 }} to {{ $products->lastItem() ?? 0 }} of {{ $products->total() }} results
+        <div class="d-flex justify-content-between align-items-center p-4 border-top bg-light">
+            <div class="pagination-info">
+                <span class="text-muted">
+                    <i class="fas fa-list me-1"></i>
+                    Showing <strong>{{ $products->firstItem() ?? 0 }}</strong> to <strong>{{ $products->lastItem() ?? 0 }}</strong> of <strong>{{ $products->total() }}</strong> results
+                </span>
             </div>
-            <div id="paginationContainer">
+            <div id="paginationContainer" class="pagination-wrapper">
                 {{ $products->appends(request()->query())->links() }}
             </div>
         </div>
@@ -75,6 +83,7 @@
     </div>
 </div>
 @endsection
+
 
 @push('scripts')
 <script>

@@ -39,6 +39,147 @@
     </div>
 </section>
 
+<!-- Gender Categories -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">Shop by Gender</h2>
+        <div class="row">
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card gender-card-simple h-100 text-center">
+                    <div class="card-img-top" style="height: 280px; overflow: hidden; position: relative;">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=280&fit=crop&crop=face"
+                             alt="Men's Collection"
+                             class="img-fluid"
+                             style="width: 100%; height: 100%; object-fit: cover;">
+                        <div class="image-overlay-simple">
+                            <i class="fas fa-male fa-3x text-white"></i>
+                        </div>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h4 class="card-title mb-3">Men's Collection</h4>
+                        <p class="card-text mb-4">Discover our exclusive range of sunglasses and frames designed for men.</p>
+                        <div class="mt-auto">
+                            <a href="{{ route('products.index', ['gender' => 'men']) }}" class="btn btn-dark btn-lg w-100">
+                                <i class="fas fa-male me-2"></i>Shop Men's Collection
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card gender-card-simple h-100 text-center">
+                    <div class="card-img-top" style="height: 280px; overflow: hidden; position: relative;">
+                        <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=280&fit=crop&crop=face"
+                             alt="Women's Collection"
+                             class="img-fluid"
+                             style="width: 100%; height: 100%; object-fit: cover;">
+                        <div class="image-overlay-simple">
+                            <i class="fas fa-female fa-3x text-white"></i>
+                        </div>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h4 class="card-title mb-3">Women's Collection</h4>
+                        <p class="card-text mb-4">Explore our elegant and stylish collection crafted for women.</p>
+                        <div class="mt-auto">
+                            <a href="{{ route('products.index', ['gender' => 'women']) }}" class="btn btn-dark btn-lg w-100">
+                                <i class="fas fa-female me-2"></i>Shop Women's Collection
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card gender-card-simple h-100 text-center">
+                    <div class="card-img-top" style="height: 280px; overflow: hidden; position: relative;">
+                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=280&fit=crop&crop=face"
+                             alt="Unisex Collection"
+                             class="img-fluid"
+                             style="width: 100%; height: 100%; object-fit: cover;">
+                        <div class="image-overlay-simple">
+                            <i class="fas fa-users fa-3x text-white"></i>
+                        </div>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h4 class="card-title mb-3">Unisex Collection</h4>
+                        <p class="card-text mb-4">Versatile designs that complement any style and personality.</p>
+                        <div class="mt-auto">
+                            <a href="{{ route('products.index', ['gender' => 'unisex']) }}" class="btn btn-dark btn-lg w-100">
+                                <i class="fas fa-users me-2"></i>Shop Unisex Collection
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Shop by Shape -->
+<section class="py-5 bg-white">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold mb-3" style="color: #2c3e50;">Shop by Shape</h2>
+            <p class="lead text-muted">Find the perfect frame shape that complements your style</p>
+        </div>
+        <div class="row g-4">
+            @foreach($shapes as $shape)
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="shape-card h-100 text-center">
+                        <div class="shape-icon-container">
+                            @if($shape->image)
+                                <img src="{{ asset('storage/' . $shape->image) }}"
+                                     alt="{{ $shape->name }}"
+                                     class="shape-image">
+                            @else
+                                <div class="shape-icon">
+                                    @switch(strtolower($shape->name))
+                                        @case('round')
+                                            <i class="fas fa-circle"></i>
+                                            @break
+                                        @case('square')
+                                            <i class="fas fa-square"></i>
+                                            @break
+                                        @case('oval')
+                                            <i class="fas fa-egg"></i>
+                                            @break
+                                        @case('cat-eye')
+                                            <i class="fas fa-eye"></i>
+                                            @break
+                                        @case('aviator')
+                                            <i class="fas fa-plane"></i>
+                                            @break
+                                        @case('wayfarer')
+                                            <i class="fas fa-glasses"></i>
+                                            @break
+                                        @case('rectangular')
+                                            <i class="fas fa-square-full"></i>
+                                            @break
+                                        @case('oversized')
+                                            <i class="fas fa-expand-arrows-alt"></i>
+                                            @break
+                                        @default
+                                            <i class="fas fa-glasses"></i>
+                                    @endswitch
+                                </div>
+                            @endif
+                        </div>
+                        <div class="shape-content">
+                            <h4 class="shape-title">{{ $shape->name }}</h4>
+                            <p class="shape-description">{{ $shape->description ?: 'Discover our collection of ' . strtolower($shape->name) . ' frames' }}</p>
+                            <a href="{{ route('products.index', ['shape' => $shape->id]) }}" class="btn shape-btn">
+                                <span>Shop {{ $shape->name }}</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    </div>
+</section>
+
+{{-- Video section temporarily hidden --}}
+
 <!-- Featured Products -->
 <section class="py-5 bg-light">
     <div class="container">
@@ -47,11 +188,7 @@
             @foreach($featuredProducts as $product)
             <div class="col-lg-3 col-md-6 mb-4">
                 <div class="card product-card h-100">
-                    @if($product->defaultVariant() && $product->defaultVariant()->image)
-                        <img src="{{ $product->defaultVariant()->image_url }}" class="card-img-top" alt="{{ $product->name }}" style="height: 250px; object-fit: cover;">
-                    @else
-                        <img src="https://via.placeholder.com/300x250/000000/FFFFFF?text={{ urlencode($product->name) }}" class="card-img-top" alt="{{ $product->name }}" style="height: 250px; object-fit: cover;">
-                    @endif
+                    <img src="{{ $product->main_image }}" class="card-img-top" alt="{{ $product->name }}" style="height: 250px; object-fit: cover;">
                     <div class="card-body d-flex flex-column">
                         <h6 class="card-title">{{ $product->name }}</h6>
                         <p class="card-text text-muted small">{{ $product->model_no }}</p>
@@ -81,7 +218,7 @@
                     <i class="fas fa-shipping-fast fa-3x text-primary"></i>
                 </div>
                 <h5>Free Shipping</h5>
-                <p class="text-muted">Free shipping on orders over $100</p>
+                <p class="text-muted">Free shipping on orders over ₹100</p>
             </div>
             <div class="col-md-4 text-center mb-4">
                 <div class="mb-3">

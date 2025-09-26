@@ -32,16 +32,20 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($order->orderItems as $item)
+                                @forelse($order->items ?? [] as $item)
                                 <tr>
-                                    <td>{{ $item->productVariant->product->name }}</td>
-                                    <td>{{ $item->productVariant->color->name }}</td>
-                                    <td><code>{{ $item->productVariant->sku }}</code></td>
+                                    <td>{{ $item->productVariant->product->name ?? 'N/A' }}</td>
+                                    <td>{{ $item->productVariant->color->name ?? 'N/A' }}</td>
+                                    <td><code>{{ $item->productVariant->sku ?? 'N/A' }}</code></td>
                                     <td>{{ $item->quantity }}</td>
-                                    <td>${{ number_format($item->price, 2) }}</td>
-                                    <td>${{ number_format($item->subtotal, 2) }}</td>
+                                    <td>₹{{ number_format($item->price, 2) }}</td>
+                                    <td>₹{{ number_format($item->subtotal, 2) }}</td>
                                 </tr>
-                                @endforeach
+                                @empty
+                                <tr>
+                                    <td colspan="6" class="text-center text-muted">No items found</td>
+                                </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>
@@ -70,18 +74,38 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between mb-2">
                         <span>Subtotal:</span>
-                        <span>${{ number_format($order->subtotal, 2) }}</span>
+                        <span>₹{{ number_format($order->subtotal, 2) }}</span>
                     </div>
+                    @if($order->tax_amount > 0)
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Tax ({{ $order->tax_type ?? 'GST' }}):</span>
+                        <span>₹{{ number_format($order->tax_amount, 2) }}</span>
+                    </div>
+                    @if($order->cgst_amount > 0 || $order->sgst_amount > 0 || $order->igst_amount > 0)
+                    <div class="d-flex justify-content-between mb-1">
+                        <small class="text-muted">CGST ({{ number_format($order->cgst_rate ?? 0, 2) }}%):</small>
+                        <small class="text-muted">₹{{ number_format($order->cgst_amount ?? 0, 2) }}</small>
+                    </div>
+                    <div class="d-flex justify-content-between mb-1">
+                        <small class="text-muted">SGST ({{ number_format($order->sgst_rate ?? 0, 2) }}%):</small>
+                        <small class="text-muted">₹{{ number_format($order->sgst_amount ?? 0, 2) }}</small>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <small class="text-muted">IGST ({{ number_format($order->igst_rate ?? 0, 2) }}%):</small>
+                        <small class="text-muted">₹{{ number_format($order->igst_amount ?? 0, 2) }}</small>
+                    </div>
+                    @endif
+                    @endif
                     @if($order->discount_amount > 0)
                     <div class="d-flex justify-content-between mb-2">
                         <span>Discount:</span>
-                        <span class="text-success">-${{ number_format($order->discount_amount, 2) }}</span>
+                        <span class="text-success">-₹{{ number_format($order->discount_amount, 2) }}</span>
                     </div>
                     @endif
                     <hr>
                     <div class="d-flex justify-content-between fw-bold">
                         <span>Total:</span>
-                        <span>${{ number_format($order->total_amount, 2) }}</span>
+                        <span>₹{{ number_format($order->total_amount, 2) }}</span>
                     </div>
                 </div>
             </div>

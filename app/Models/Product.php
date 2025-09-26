@@ -48,7 +48,7 @@ class Product extends Model
 
     public function defaultVariant()
     {
-        return $this->variants()->first();
+        return $this->variants()->with('images')->first();
     }
 
     public function availableVariants()
@@ -72,10 +72,10 @@ class Product extends Model
         $max = $this->max_price;
 
         if ($min == $max) {
-            return '$' . number_format($min, 2);
+            return '₹' . number_format($min, 2);
         }
 
-        return '$' . number_format($min, 2) . ' - $' . number_format($max, 2);
+        return '₹' . number_format($min, 2) . ' - ₹' . number_format($max, 2);
     }
 
     public static function getGenderOptions()
@@ -90,5 +90,16 @@ class Product extends Model
     public function getGenderLabelAttribute()
     {
         return self::getGenderOptions()[$this->gender] ?? $this->gender;
+    }
+
+    public function getMainImageAttribute()
+    {
+        $defaultVariant = $this->defaultVariant();
+        if ($defaultVariant) {
+            return $defaultVariant->image_url;
+        }
+
+        // Fallback to placeholder
+        return 'https://via.placeholder.com/600x400/000000/FFFFFF?text=' . urlencode($this->name);
     }
 }

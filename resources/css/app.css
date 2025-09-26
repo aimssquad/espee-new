@@ -9,3 +9,407 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+/* Simple Gender Cards Styling */
+.gender-card-simple {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 2px solid #000;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background: #fff;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+.gender-card-simple:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    border-color: #333;
+}
+
+.gender-card-simple .card-body {
+    padding: 1.5rem;
+    background: #fff;
+}
+
+.gender-card-simple .card-img-top {
+    transition: transform 0.3s ease;
+    border-bottom: 2px solid #000;
+}
+
+.gender-card-simple:hover .card-img-top {
+    transform: scale(1.03);
+}
+
+.gender-card-simple .card-title {
+    color: #000;
+    font-weight: 700;
+    font-size: 1.25rem;
+}
+
+.gender-card-simple .card-text {
+    color: #666;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.gender-card-simple .btn-dark {
+    background-color: #000;
+    border-color: #000;
+    color: #fff;
+    font-weight: 600;
+    padding: 10px 20px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.gender-card-simple .btn-dark:hover {
+    background-color: #333;
+    border-color: #333;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Image Overlay */
+.image-overlay-simple {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.gender-card-simple:hover .image-overlay-simple {
+    opacity: 1;
+}
+
+.image-overlay-simple i {
+    font-size: 2rem;
+}
+
+/* Video Banner Section */
+.video-banner-section {
+    position: relative;
+    height: 80vh;
+    min-height: 500px;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+}
+
+.video-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.video-iframe,
+.video-element {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+}
+
+.video-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+}
+
+.video-content {
+    text-align: center;
+    position: relative;
+    z-index: 3;
+}
+
+.btn-video-cta {
+    background: rgba(0, 0, 0, 0.8) !important;
+    color: #fff !important;
+    border: 2px solid #fff !important;
+    padding: 15px 40px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    border-radius: 0;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    transition: all 0.3s ease;
+    text-decoration: none !important;
+    display: inline-block;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(5px);
+    cursor: pointer;
+    position: relative;
+    z-index: 4;
+}
+
+.btn-video-cta:hover {
+    background: rgba(0, 0, 0, 0.95) !important;
+    color: #fff !important;
+    border-color: #fff !important;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+    text-decoration: none !important;
+}
+
+/* Additional Button Styles */
+.btn-video-cta:focus,
+.btn-video-cta:active,
+.btn-video-cta:visited {
+    background: rgba(0, 0, 0, 0.8) !important;
+    color: #fff !important;
+    border-color: #fff !important;
+    text-decoration: none !important;
+    outline: none;
+}
+
+.btn-video-cta:focus {
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+}
+
+/* Responsive Video Banner */
+@media (max-width: 768px) {
+    .video-banner-section {
+        height: 60vh;
+        min-height: 400px;
+    }
+
+    .btn-video-cta {
+        padding: 12px 30px;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .video-banner-section {
+        height: 50vh;
+        min-height: 300px;
+    }
+
+    .btn-video-cta {
+        padding: 10px 25px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Shape Cards Styling - Proper Card Design */
+.shape-card {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 2rem 1.5rem;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.shape-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+    border-color: #000;
+}
+
+.shape-icon-container {
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 2;
+}
+
+.shape-image {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    border: 2px solid #e0e0e0;
+    background: #f8f9fa;
+    padding: 8px;
+}
+
+.shape-card:hover .shape-image {
+    transform: scale(1.1);
+    border-color: #000;
+}
+
+.shape-icon {
+    width: 80px;
+    height: 80px;
+    background: #f8f9fa;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    transition: all 0.3s ease;
+    border: 2px solid #e0e0e0;
+    position: relative;
+    overflow: hidden;
+}
+
+.shape-card:hover .shape-icon {
+    background: #000;
+    border-color: #000;
+    transform: scale(1.1);
+}
+
+.shape-icon i {
+    font-size: 2rem;
+    color: #666;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 2;
+}
+
+.shape-card:hover .shape-icon i {
+    color: #fff;
+    transform: scale(1.1);
+}
+
+.shape-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    z-index: 2;
+}
+
+.shape-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #000;
+    margin-bottom: 0.75rem;
+    line-height: 1.2;
+    transition: all 0.3s ease;
+}
+
+.shape-card:hover .shape-title {
+    color: #000;
+}
+
+.shape-description {
+    color: #666;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+    flex: 1;
+    transition: all 0.3s ease;
+}
+
+.shape-card:hover .shape-description {
+    color: #666;
+}
+
+.shape-btn {
+    background: #000;
+    color: #fff;
+    border: 2px solid #000;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+    z-index: 3;
+}
+
+.shape-btn:hover {
+    background: #fff;
+    color: #000;
+    border-color: #000;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    text-decoration: none;
+}
+
+.shape-btn i {
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.shape-btn:hover i {
+    transform: translateX(3px);
+}
+
+/* Product Cards */
+.product-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background: #fff;
+    overflow: hidden;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    border-color: #000;
+}
+
+.product-card .card-img-top {
+    transition: transform 0.3s ease;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.product-card:hover .card-img-top {
+    transform: scale(1.03);
+}
+
+.product-card .card-title {
+    color: #000;
+    font-weight: 600;
+}
+
+.product-card .card-text {
+    color: #666;
+}
+
+.product-card .btn-outline-primary {
+    border-color: #000;
+    color: #000;
+    font-weight: 500;
+    border-radius: 0;
+    transition: all 0.3s ease;
+}
+
+.product-card .btn-outline-primary:hover {
+    background-color: #000;
+    border-color: #000;
+    color: #fff;
+    transform: translateY(-1px);
+}

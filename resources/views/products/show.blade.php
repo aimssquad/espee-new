@@ -88,7 +88,7 @@
             <p class="text-muted">{{ $product->model_no }}</p>
 
             <div class="price mb-3">
-                <span id="current-price" class="h4">${{ number_format($product->variants->first()->price ?? $product->base_price, 2) }}</span>
+                <span id="current-price" class="h4">₹{{ number_format($product->variants->first()->price ?? $product->base_price, 2) }}</span>
             </div>
 
             <div class="mb-4">
@@ -197,7 +197,7 @@ $(document).ready(function() {
         const image = $(this).data('image');
 
         $('#selected-variant').val(variantId);
-        $('#current-price').text('$' + parseFloat(price).toFixed(2));
+        $('#current-price').text('₹' + parseFloat(price).toFixed(2));
 
         // Update carousel with multiple images
         if (images && images.length > 0) {
@@ -279,26 +279,7 @@ $(document).ready(function() {
         $('#stock-info').text('Stock information loading...');
     }
 
-    function showToast(type, message) {
-        // Create toast notification
-        const toast = $(`
-            <div class="toast align-items-center text-white bg-${type === 'success' ? 'success' : 'danger'} border-0" role="alert">
-                <div class="d-flex">
-                    <div class="toast-body">${message}</div>
-                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-                </div>
-            </div>
-        `);
-
-        $('body').append(toast);
-        const bsToast = new bootstrap.Toast(toast[0]);
-        bsToast.show();
-
-        // Remove toast after it's hidden
-        toast.on('hidden.bs.toast', function() {
-            $(this).remove();
-        });
-    }
+    // showToast function is now available globally from app layout
 });
 </script>
 @endpush

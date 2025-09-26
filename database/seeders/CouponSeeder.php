@@ -30,7 +30,7 @@ class CouponSeeder extends Seeder
             [
                 'code' => 'SAVE20',
                 'name' => 'Save 20%',
-                'description' => '20% off on orders above $200',
+                'description' => '20% off on orders above ₹200',
                 'type' => 'percentage',
                 'value' => 20,
                 'minimum_amount' => 200,
@@ -42,8 +42,8 @@ class CouponSeeder extends Seeder
             ],
             [
                 'code' => 'FLAT50',
-                'name' => 'Flat $50 Off',
-                'description' => 'Get $50 off on orders above $300',
+                'name' => 'Flat ₹50 Off',
+                'description' => 'Get ₹50 off on orders above ₹300',
                 'type' => 'fixed',
                 'value' => 50,
                 'minimum_amount' => 300,
@@ -107,7 +107,7 @@ class CouponSeeder extends Seeder
             [
                 'code' => 'BULK100',
                 'name' => 'Bulk Purchase',
-                'description' => '$100 off on orders above $500',
+                'description' => '₹100 off on orders above ₹500',
                 'type' => 'fixed',
                 'value' => 100,
                 'minimum_amount' => 500,

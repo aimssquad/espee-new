@@ -65,7 +65,7 @@
                                     {{ $variant->color->name }}
                                 </div>
                             </td>
-                            <td>${{ number_format($variant->price, 2) }}</td>
+                            <td>₹{{ number_format($variant->price, 2) }}</td>
                             <td>
                                 <span class="badge bg-{{ $variant->stock > 10 ? 'success' : ($variant->stock > 0 ? 'warning' : 'danger') }}">
                                     {{ $variant->stock }}

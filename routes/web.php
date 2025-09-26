@@ -18,6 +18,7 @@ use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\CouponController as AdminCouponController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\ExcelUploadController;
 
 // Public routes
 Route::get('/', [StoreController::class, 'index'])->name('home');
@@ -26,6 +27,7 @@ Route::get('/products/{product}', [ProductController::class, 'show'])->name('pro
 
 // Cart routes
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+Route::get('/cart/count', [CartController::class, 'count'])->name('cart.count');
 Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
 Route::post('/cart/update', [CartController::class, 'update'])->name('cart.update');
 Route::post('/cart/remove', [CartController::class, 'remove'])->name('cart.remove');
@@ -51,7 +53,7 @@ Route::get('/admin/login', [LoginController::class, 'showLoginForm'])->name('adm
 Route::post('/admin/login', [LoginController::class, 'login']);
 
 // Admin routes
-Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Categories
@@ -87,4 +89,40 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
 
     // Users
     Route::resource('users', UserController::class);
+
+    // Video Settings
+    Route::resource('video-settings', \App\Http\Controllers\Admin\VideoSettingController::class);
+
+    // Excel Upload
+    Route::get('excel-upload', [ExcelUploadController::class, 'index'])->name('excel-upload.index');
+    Route::get('excel-upload/template', [ExcelUploadController::class, 'downloadTemplate'])->name('excel-upload.template');
+    Route::post('excel-upload', [ExcelUploadController::class, 'upload'])->name('excel-upload.upload');
+
+    // Tax Master
+    Route::resource('tax-master', \App\Http\Controllers\Admin\TaxMasterController::class);
+    Route::post('tax-master/{taxMaster}/toggle-status', [\App\Http\Controllers\Admin\TaxMasterController::class, 'toggleStatus'])->name('tax-master.toggle-status');
+    Route::post('tax-master/test-calculation', [\App\Http\Controllers\Admin\TaxMasterController::class, 'testCalculation'])->name('tax-master.test-calculation');
+
+    // Payment Methods
+    Route::resource('payment-methods', \App\Http\Controllers\Admin\PaymentMethodController::class);
+    Route::get('payment-methods/{paymentMethod}/credentials', [\App\Http\Controllers\Admin\PaymentMethodController::class, 'showCredentials'])->name('payment-methods.credentials');
+    Route::post('payment-methods/{paymentMethod}/credentials', [\App\Http\Controllers\Admin\PaymentMethodController::class, 'updateCredentials'])->name('payment-methods.credentials.update');
+    Route::post('payment-methods/{paymentMethod}/toggle-status', [\App\Http\Controllers\Admin\PaymentMethodController::class, 'toggleStatus'])->name('payment-methods.toggle-status');
+    Route::post('payment-methods/reorder', [\App\Http\Controllers\Admin\PaymentMethodController::class, 'reorder'])->name('payment-methods.reorder');
+});
+
+// User Panel Routes
+Route::middleware(['auth'])->prefix('my-account')->name('user-panel.')->group(function () {
+    Route::get('/', [\App\Http\Controllers\UserPanelController::class, 'dashboard'])->name('dashboard');
+    Route::get('/orders', [\App\Http\Controllers\UserPanelController::class, 'orders'])->name('orders');
+    Route::get('/orders/{order}', [\App\Http\Controllers\UserPanelController::class, 'orderDetails'])->name('order-details');
+    Route::get('/addresses', [\App\Http\Controllers\UserPanelController::class, 'addresses'])->name('addresses');
+    Route::get('/addresses/create', [\App\Http\Controllers\UserPanelController::class, 'createAddress'])->name('addresses.create');
+    Route::post('/addresses', [\App\Http\Controllers\UserPanelController::class, 'storeAddress'])->name('addresses.store');
+    Route::get('/addresses/{address}/edit', [\App\Http\Controllers\UserPanelController::class, 'editAddress'])->name('addresses.edit');
+    Route::put('/addresses/{address}', [\App\Http\Controllers\UserPanelController::class, 'updateAddress'])->name('addresses.update');
+    Route::delete('/addresses/{address}', [\App\Http\Controllers\UserPanelController::class, 'deleteAddress'])->name('addresses.delete');
+    Route::post('/addresses/{address}/set-default', [\App\Http\Controllers\UserPanelController::class, 'setDefaultAddress'])->name('addresses.set-default');
+    Route::get('/profile', [\App\Http\Controllers\UserPanelController::class, 'profile'])->name('profile');
+    Route::put('/profile', [\App\Http\Controllers\UserPanelController::class, 'updateProfile'])->name('profile.update');
 });

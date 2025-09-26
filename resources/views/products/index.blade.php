@@ -4,6 +4,17 @@
 
 @section('content')
 <div class="container py-5">
+    @if(request('search'))
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="alert alert-info">
+                    <h5 class="mb-2">Search Results for "{{ request('search') }}"</h5>
+                    <p class="mb-0">Found {{ $products->count() }} product(s) matching your search.</p>
+                </div>
+            </div>
+        </div>
+    @endif
+
     <div class="row">
         <!-- Filters Sidebar -->
         <div class="col-lg-3">
@@ -36,6 +47,17 @@
                                         {{ $shape->name }}
                                     </option>
                                 @endforeach
+                            </select>
+                        </div>
+
+                        <!-- Gender Filter -->
+                        <div class="mb-3">
+                            <label class="form-label">Gender</label>
+                            <select name="gender" class="form-select" id="gender-filter">
+                                <option value="">All Genders</option>
+                                <option value="men" {{ request('gender') == 'men' ? 'selected' : '' }}>Men</option>
+                                <option value="women" {{ request('gender') == 'women' ? 'selected' : '' }}>Women</option>
+                                <option value="unisex" {{ request('gender') == 'unisex' ? 'selected' : '' }}>Unisex</option>
                             </select>
                         </div>
 
@@ -102,11 +124,7 @@
                     @foreach($products as $product)
                     <div class="col-lg-4 col-md-6 mb-4">
                         <div class="card product-card h-100">
-                            @if($product->defaultVariant() && $product->defaultVariant()->image)
-                                <img src="{{ $product->defaultVariant()->image_url }}" class="card-img-top" alt="{{ $product->name }}" style="height: 250px; object-fit: cover;">
-                            @else
-                                <img src="https://via.placeholder.com/300x250/000000/FFFFFF?text={{ urlencode($product->name) }}" class="card-img-top" alt="{{ $product->name }}" style="height: 250px; object-fit: cover;">
-                            @endif
+                            <img src="{{ $product->main_image }}" class="card-img-top" alt="{{ $product->name }}" style="height: 250px; object-fit: cover;">
                             <div class="card-body d-flex flex-column">
                                 <h6 class="card-title">{{ $product->name }}</h6>
                                 <p class="card-text text-muted small">{{ $product->model_no }}</p>
@@ -143,6 +161,10 @@ $(document).ready(function() {
     });
 
     $('#sort-select').on('change', function() {
+        loadProducts();
+    });
+
+    $('#gender-filter').on('change', function() {
         loadProducts();
     });
 

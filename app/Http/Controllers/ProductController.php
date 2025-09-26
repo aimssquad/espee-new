@@ -17,17 +17,25 @@ class ProductController extends Controller
 
         // Filter by category
         if ($request->filled('category')) {
-            $category = Category::where('slug', $request->category)->first();
-            if ($category) {
-                $query->where('category_id', $category->id);
+            if (is_numeric($request->category)) {
+                $query->where('category_id', $request->category);
+            } else {
+                $category = Category::where('slug', $request->category)->first();
+                if ($category) {
+                    $query->where('category_id', $category->id);
+                }
             }
         }
 
         // Filter by subcategory
         if ($request->filled('subcategory')) {
-            $subcategory = Subcategory::where('slug', $request->subcategory)->first();
-            if ($subcategory) {
-                $query->where('subcategory_id', $subcategory->id);
+            if (is_numeric($request->subcategory)) {
+                $query->where('subcategory_id', $request->subcategory);
+            } else {
+                $subcategory = Subcategory::where('slug', $request->subcategory)->first();
+                if ($subcategory) {
+                    $query->where('subcategory_id', $subcategory->id);
+                }
             }
         }
 
@@ -43,17 +51,26 @@ class ProductController extends Controller
             });
         }
 
-        // Search
+        // Filter by gender
+        if ($request->filled('gender')) {
+            $query->where('gender', $request->gender);
+        }
+
+        // Search functionality
         if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('model_no', 'like', "%{$search}%")
-                  ->orWhereHas('variants', function($sq) use ($search) {
-                      $sq->where('sku', 'like', "%{$search}%");
+            $searchTerm = $request->search;
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('name', 'like', "%{$searchTerm}%")
+                  ->orWhere('description', 'like', "%{$searchTerm}%")
+                  ->orWhereHas('category', function($categoryQuery) use ($searchTerm) {
+                      $categoryQuery->where('name', 'like', "%{$searchTerm}%");
+                  })
+                  ->orWhereHas('subcategory', function($subcategoryQuery) use ($searchTerm) {
+                      $subcategoryQuery->where('name', 'like', "%{$searchTerm}%");
                   });
             });
         }
+
 
         // Price range filter
         if ($request->filled('min_price')) {
@@ -89,12 +106,9 @@ class ProductController extends Controller
                 $products = $query->paginate(12);
         }
 
-        // For AJAX requests
+        // For AJAX requests (live search)
         if ($request->ajax()) {
-            return response()->json([
-                'products' => view('partials.product-grid', compact('products'))->render(),
-                'pagination' => $products instanceof \Illuminate\Pagination\LengthAwarePaginator ? $products->links()->render() : ''
-            ]);
+            return view('products.partials.product-cards', compact('products'))->render();
         }
 
         // Get filter options

@@ -154,6 +154,73 @@
             color: white;
         }
 
+        /* Enhanced Pagination Styling */
+        .pagination-wrapper .pagination {
+            margin: 0;
+            gap: 0.25rem;
+        }
+
+        .pagination-wrapper .pagination .page-item {
+            margin: 0;
+        }
+
+        .pagination-wrapper .pagination .page-link {
+            border: 1px solid #dee2e6;
+            color: #495057;
+            background-color: #fff;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.375rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            min-width: 40px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pagination-wrapper .pagination .page-link:hover {
+            background-color: #e9ecef;
+            border-color: #adb5bd;
+            color: #495057;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .pagination-wrapper .pagination .page-item.active .page-link {
+            background-color: #007bff;
+            border-color: #007bff;
+            color: #fff;
+            font-weight: 600;
+            box-shadow: 0 2px 4px rgba(0,123,255,0.3);
+        }
+
+        .pagination-wrapper .pagination .page-item.disabled .page-link {
+            background-color: #f8f9fa;
+            border-color: #dee2e6;
+            color: #6c757d;
+            cursor: not-allowed;
+        }
+
+        .pagination-wrapper .pagination .page-item.disabled .page-link:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .pagination-wrapper .pagination .page-link i {
+            font-size: 0.875rem;
+        }
+
+        /* Pagination Info Styling */
+        .pagination-info {
+            font-size: 0.875rem;
+        }
+
+        .pagination-info strong {
+            color: #495057;
+            font-weight: 600;
+        }
+
         @media (max-width: 768px) {
             .sidebar {
                 transform: translateX(-100%);
@@ -165,6 +232,28 @@
 
             .main-content {
                 margin-left: 0;
+            }
+
+            /* Responsive Pagination */
+            .pagination-wrapper .pagination {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .pagination-wrapper .pagination .page-link {
+                padding: 0.375rem 0.5rem;
+                min-width: 35px;
+                font-size: 0.875rem;
+            }
+
+            .pagination-info {
+                text-align: center;
+                margin-bottom: 1rem;
+            }
+
+            .d-flex.justify-content-between {
+                flex-direction: column;
+                align-items: center !important;
             }
         }
     </style>
@@ -222,6 +311,26 @@
                         <span>Coupons</span>
                     </a>
                 </li>
+
+                <li class="nav-item">
+                    <a href="{{ route('admin.video-settings.index') }}" class="nav-link {{ request()->routeIs('admin.video-settings.*') ? 'active' : '' }}">
+                        <i class="fas fa-video"></i>
+                        <span>Video Banner</span>
+                    </a>
+                </li>
+
+                    <li class="nav-item">
+                        <a href="{{ route('admin.payment-methods.index') }}" class="nav-link {{ request()->routeIs('admin.payment-methods.*') ? 'active' : '' }}">
+                            <i class="fas fa-credit-card"></i>
+                            <span>Payment Methods</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('admin.tax-master.index') }}" class="nav-link {{ request()->routeIs('admin.tax-master.*') ? 'active' : '' }}">
+                            <i class="fas fa-receipt"></i>
+                            <span>Tax Master</span>
+                        </a>
+                    </li>
 
                 <li class="nav-item">
                     <a href="{{ route('admin.colors.index') }}" class="nav-link {{ request()->routeIs('admin.colors.*') ? 'active' : '' }}">

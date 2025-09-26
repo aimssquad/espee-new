@@ -92,8 +92,8 @@
         <div class="col-md-3 mb-3">
             <div class="card text-center">
                 <div class="card-body">
-                    <i class="fas fa-dollar-sign fa-2x text-info mb-2"></i>
-                    <h5 class="card-title">${{ number_format($orderStats['total_revenue'], 2) }}</h5>
+                    <i class="fas fa-rupee-sign fa-2x text-info mb-2"></i>
+                    <h5 class="card-title">₹{{ number_format($orderStats['total_revenue'], 2) }}</h5>
                     <p class="card-text">Total Revenue</p>
                 </div>
             </div>
@@ -102,7 +102,7 @@
             <div class="card text-center">
                 <div class="card-body">
                     <i class="fas fa-chart-line fa-2x text-warning mb-2"></i>
-                    <h5 class="card-title">${{ number_format($orderStats['average_order_value'], 2) }}</h5>
+                    <h5 class="card-title">₹{{ number_format($orderStats['average_order_value'], 2) }}</h5>
                     <p class="card-text">Avg Order Value</p>
                 </div>
             </div>
@@ -131,6 +131,11 @@
                         <div class="col-md-3 mb-2">
                             <a href="{{ route('admin.products.index') }}" class="btn btn-outline-primary w-100">
                                 <i class="fas fa-box me-2"></i>Products
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <a href="{{ route('admin.excel-upload.index') }}" class="btn btn-outline-success w-100">
+                                <i class="fas fa-file-excel me-2"></i>Excel Upload
                             </a>
                         </div>
                         <div class="col-md-3 mb-2">
@@ -231,7 +236,7 @@
                                 <tr>
                                     <td>{{ $order->order_number }}</td>
                                     <td>{{ $order->customer_name }}</td>
-                                    <td>${{ number_format($order->total_amount, 2) }}</td>
+                                    <td>₹{{ number_format($order->total_amount, 2) }}</td>
                                     <td>
                                         <span class="badge bg-warning">{{ ucfirst($order->status) }}</span>
                                     </td>
@@ -347,7 +352,7 @@ document.addEventListener('DOMContentLoaded', function() {
         data: {
             labels: {!! json_encode(array_column($revenueChartData, 'date')) !!},
             datasets: [{
-                label: 'Revenue ($)',
+                label: 'Revenue (₹)',
                 data: {!! json_encode(array_column($revenueChartData, 'revenue')) !!},
                 backgroundColor: 'rgba(153, 102, 255, 0.8)',
                 borderColor: 'rgba(153, 102, 255, 1)',

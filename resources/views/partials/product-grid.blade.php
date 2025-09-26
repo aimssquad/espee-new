@@ -3,7 +3,7 @@
     <div class="col-lg-4 col-md-6">
         <div class="product-card h-100">
             <a href="{{ route('products.show', $product) }}" class="text-decoration-none text-dark">
-                <img src="{{ $product->defaultVariant() ? $product->defaultVariant()->image_url : 'https://via.placeholder.com/600x400/000000/FFFFFF?text=' . urlencode($product->name) }}" 
+                <img src="{{ $product->main_image }}"
                      class="card-img-top" alt="{{ $product->name }}">
                 <div class="card-body">
                     <h5 class="card-title">{{ $product->name }}</h5>
@@ -12,7 +12,7 @@
                     @if($product->variants->count() > 1)
                     <div class="color-options">
                         @foreach($product->variants->take(5) as $variant)
-                        <span class="color-swatch" 
+                        <span class="color-swatch"
                               style="background-color: {{ $variant->color->hex_code }}"
                               title="{{ $variant->color->name }}"></span>
                         @endforeach

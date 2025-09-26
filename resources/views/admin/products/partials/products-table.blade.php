@@ -73,7 +73,7 @@
                     <span class="badge bg-success">{{ $product->variants_count }} SKUs</span>
                 </td>
                 <td>
-                    <strong class="text-success">${{ number_format($product->base_price, 2) }}</strong>
+                    <strong class="text-success">₹{{ number_format($product->base_price, 2) }}</strong>
                 </td>
                 <td>
                     <small class="text-muted">{{ $product->created_at->format('M d, Y') }}</small>

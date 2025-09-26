@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\ProductVariant;
+use App\Models\VideoSetting;
+use App\Models\Shape;
 use Illuminate\Http\Request;
 
 class StoreController extends Controller
@@ -20,6 +22,9 @@ class StoreController extends Controller
             ->limit(8)
             ->get();
 
-        return view('store.index', compact('featuredCategories', 'featuredProducts'));
+        $videoSetting = VideoSetting::where('is_active', true)->first();
+        $shapes = Shape::all();
+
+        return view('store.index', compact('featuredCategories', 'featuredProducts', 'videoSetting', 'shapes'));
     }
 }

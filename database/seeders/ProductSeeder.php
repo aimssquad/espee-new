@@ -260,7 +260,7 @@ class ProductSeeder extends Seeder
             $selectedColors = $colors->random($variantCount);
 
             foreach ($selectedColors as $index => $color) {
-                $priceVariation = rand(-20, 30); // Price can vary ±$20-30 from base
+                $priceVariation = rand(-20, 30); // Price can vary ±₹20-30 from base
                 $price = $product->base_price + $priceVariation;
                 $stock = rand(0, 50); // Random stock between 0-50
 
@@ -295,7 +295,7 @@ class ProductSeeder extends Seeder
             $selectedColors = $colors->random($variantCount);
 
             foreach ($selectedColors as $index => $color) {
-                $priceVariation = rand(-15, 25); // Price can vary ±$15-25 from base
+                $priceVariation = rand(-15, 25); // Price can vary ±₹15-25 from base
                 $price = $product->base_price + $priceVariation;
                 $stock = rand(0, 40); // Random stock between 0-40
 

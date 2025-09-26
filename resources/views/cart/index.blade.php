@@ -14,26 +14,27 @@
                     @foreach($cartItems as $item)
                     <div class="row align-items-center mb-4 cart-item" data-variant-id="{{ $item['variant']->id }}">
                         <div class="col-md-2">
-                            @if($item['variant']->image)
-                                <img src="{{ $item['variant']->image_url }}" class="img-fluid rounded" alt="{{ $item['variant']->product->name }}" style="height: 80px; object-fit: cover;">
-                            @else
-                                <img src="https://via.placeholder.com/80x80/000000/FFFFFF?text={{ urlencode($item['variant']->product->name) }}" class="img-fluid rounded" alt="{{ $item['variant']->product->name }}" style="height: 80px; object-fit: cover;">
-                            @endif
+                            <img src="{{ $item['variant']->image_url }}" class="img-fluid rounded" alt="{{ $item['variant']->product->name }}" style="height: 80px; object-fit: cover;">
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <h6 class="mb-1">{{ $item['variant']->product->name }}</h6>
                             <p class="text-muted small mb-1">{{ $item['variant']->product->model_no }}</p>
                             <p class="text-muted small">Color: {{ $item['variant']->color->name }}</p>
                         </div>
                         <div class="col-md-2">
                             <label class="form-label small">Quantity</label>
-                            <input type="number" class="form-control quantity-input" value="{{ $item['quantity'] }}" min="1" max="{{ $item['variant']->stock }}">
+                            <div class="quantity-container">
+                                <input type="number" class="form-control quantity-input" value="{{ $item['quantity'] }}" min="1" max="{{ $item['variant']->stock }}">
+                            </div>
                         </div>
                         <div class="col-md-2">
-                            <div class="price">${{ number_format($item['variant']->price, 2) }}</div>
+                            <div class="price-container">
+                                <div class="price">₹{{ number_format($item['variant']->price, 2) }}</div>
+                                <small class="text-muted">per piece</small>
+                            </div>
                         </div>
                         <div class="col-md-2">
-                            <div class="subtotal">${{ number_format($item['subtotal'], 2) }}</div>
+                            <div class="subtotal">₹{{ number_format($item['subtotal'], 2) }}</div>
                         </div>
                         <div class="col-md-1">
                             <button class="btn btn-outline-danger btn-sm remove-item">
@@ -63,20 +64,16 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between mb-2">
                         <span>Subtotal:</span>
-                        <span id="subtotal">${{ number_format($total, 2) }}</span>
+                        <span id="subtotal">₹{{ number_format($total, 2) }}</span>
                     </div>
                     <div class="d-flex justify-content-between mb-2">
                         <span>Shipping:</span>
                         <span>Free</span>
                     </div>
-                    <div class="d-flex justify-content-between mb-2">
-                        <span>Tax:</span>
-                        <span>$0.00</span>
-                    </div>
                     <hr>
                     <div class="d-flex justify-content-between mb-3">
                         <strong>Total:</strong>
-                        <strong id="total">${{ number_format($total, 2) }}</strong>
+                        <strong id="total">₹{{ number_format($total, 2) }}</strong>
                     </div>
 
                     <a href="{{ route('checkout.index') }}" class="btn btn-primary w-100">
@@ -117,13 +114,14 @@ $(document).ready(function() {
                 if (response.success) {
                     // Update subtotal for this item
                     const cartItem = $(`.cart-item[data-variant-id="${variantId}"]`);
-                    const price = parseFloat(cartItem.find('.price').text().replace('$', ''));
+                    const priceElement = cartItem.find('.price');
+                    const price = parseFloat(priceElement.text().replace('₹', '').replace(',', ''));
                     const newSubtotal = price * quantity;
-                    cartItem.find('.subtotal').text('$' + newSubtotal.toFixed(2));
+                    cartItem.find('.subtotal').text('₹' + newSubtotal.toFixed(2));
 
-                    // Update total
-                    $('#subtotal').text('$' + response.total);
-                    $('#total').text('$' + response.total);
+                    // Update totals
+                    $('#subtotal').text('₹' + response.total);
+                    $('#total').text('₹' + response.total);
                 } else {
                     showToast('error', response.message);
                 }
@@ -154,9 +152,9 @@ $(document).ready(function() {
                     // Update cart count
                     $('#cart-count').text(response.cart_count);
 
-                    // Update total
-                    $('#subtotal').text('$' + response.total);
-                    $('#total').text('$' + response.total);
+                    // Update totals
+                    $('#subtotal').text('₹' + response.total);
+                    $('#total').text('₹' + response.total);
 
                     // Check if cart is empty
                     if (response.cart_count == 0) {
@@ -188,8 +186,8 @@ $(document).ready(function() {
                         $('#cart-count').text(response.cart_count);
 
                         // Update totals
-                        $('#subtotal').text('$' + response.total);
-                        $('#total').text('$' + response.total);
+                        $('#subtotal').text('₹' + response.total);
+                        $('#total').text('₹' + response.total);
 
                         // Redirect to cart page to show empty state
                         setTimeout(() => {
@@ -205,24 +203,54 @@ $(document).ready(function() {
         }
     });
 
-    function showToast(type, message) {
-        const toast = $(`
-            <div class="toast align-items-center text-white bg-${type === 'success' ? 'success' : 'danger'} border-0" role="alert">
-                <div class="d-flex">
-                    <div class="toast-body">${message}</div>
-                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-                </div>
-            </div>
-        `);
-
-        $('body').append(toast);
-        const bsToast = new bootstrap.Toast(toast[0]);
-        bsToast.show();
-
-        toast.on('hidden.bs.toast', function() {
-            $(this).remove();
-        });
-    }
+    // showToast function is now available globally from app layout
 });
 </script>
+
+<style>
+.quantity-container {
+    position: relative;
+}
+
+.quantity-input {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 8px;
+    width: 100%;
+    text-align: center;
+    font-size: 14px;
+}
+
+.quantity-input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Ensure no currency formatting is applied to quantity input */
+.quantity-input::before,
+.quantity-input::after {
+    content: none !important;
+}
+
+/* Clear any potential currency symbols */
+.quantity-container::before,
+.quantity-container::after {
+    display: none !important;
+}
+
+.price-container {
+    text-align: left;
+    padding-left: 10px;
+}
+
+.cart-item .col-md-2 {
+    margin-bottom: 10px;
+}
+
+/* Ensure proper column separation */
+.cart-item [class*="col-"] {
+    padding-left: 8px;
+    padding-right: 8px;
+}
+</style>
 @endpush

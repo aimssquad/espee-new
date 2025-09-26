@@ -41,7 +41,7 @@
                                 @if($coupon->type === 'percentage')
                                     {{ $coupon->value }}%
                                 @else
-                                    ${{ number_format($coupon->value, 2) }}
+                                    ₹{{ number_format($coupon->value, 2) }}
                                 @endif
                             </td>
                             <td>{{ $coupon->used_count }}/{{ $coupon->usage_limit ?? '∞' }}</td>
