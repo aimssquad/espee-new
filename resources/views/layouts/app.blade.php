@@ -257,7 +257,7 @@
             color: #333 !important;
         }
 
-        /* Responsive Search */
+        /* Responsive Design */
         @media (max-width: 768px) {
             .search-container {
                 margin: 10px 0;
@@ -266,6 +266,130 @@
 
             .search-input {
                 width: 100%;
+            }
+
+            /* Hero Section Mobile */
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .hero-btn {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .hero-stats {
+                justify-content: center;
+            }
+
+            .stat-item h3 {
+                font-size: 2rem;
+            }
+
+            .sunglasses-showcase {
+                height: 300px;
+            }
+
+            .sunglass-item {
+                width: 120px;
+                height: 120px;
+            }
+
+            /* Section Titles Mobile */
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .section-subtitle {
+                font-size: 1rem;
+            }
+
+            /* Product Cards Mobile */
+            .product-card-modern {
+                margin-bottom: 2rem;
+            }
+
+            .product-actions {
+                gap: 0.5rem;
+            }
+
+            .action-btn {
+                width: 40px;
+                height: 40px;
+            }
+
+            /* Feature Cards Mobile */
+            .feature-card {
+                padding: 2rem 1.5rem;
+                margin-bottom: 2rem;
+            }
+
+            .feature-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+            }
+
+            .feature-title {
+                font-size: 1.3rem;
+            }
+
+            /* Category Cards Mobile */
+            .category-card {
+                height: 300px;
+                margin-bottom: 2rem;
+            }
+
+            .category-title {
+                font-size: 1.5rem;
+            }
+
+            .category-description {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+
+            .section-title {
+                font-size: 1.8rem;
+            }
+
+            .stat-item h3 {
+                font-size: 1.8rem;
+            }
+
+            .sunglass-item {
+                width: 100px;
+                height: 100px;
+            }
+
+            .feature-card {
+                padding: 1.5rem 1rem;
+            }
+
+            .category-card {
+                height: 250px;
+            }
+
+            .category-title {
+                font-size: 1.3rem;
             }
         }
 
@@ -304,9 +428,148 @@
         }
 
         .footer {
-            background-color: var(--primary-color);
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
             color: var(--secondary-color);
-            padding: 40px 0;
+            padding: 60px 0 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="footer-grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="0.5" fill="%23fff" opacity="0.03"/><circle cx="75" cy="75" r="0.5" fill="%23fff" opacity="0.03"/><circle cx="50" cy="10" r="0.3" fill="%23fff" opacity="0.05"/><circle cx="10" cy="50" r="0.3" fill="%23fff" opacity="0.05"/></pattern></defs><rect width="100" height="100" fill="url(%23footer-grain)"/></svg>');
+            pointer-events: none;
+        }
+
+        .footer-brand h4 {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            margin-bottom: 1rem;
+        }
+
+        .social-links {
+            margin-top: 1.5rem;
+        }
+
+        .social-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border-radius: 50%;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .social-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .footer-links li a {
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .footer-links li a:hover {
+            color: #fff !important;
+            transform: translateX(5px);
+        }
+
+        .contact-info .contact-item {
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .contact-info .contact-item:hover {
+            transform: translateX(5px);
+        }
+
+        .newsletter-section {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .newsletter-form input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            border-radius: 25px;
+        }
+
+        .newsletter-form input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .newsletter-form input:focus {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+            color: #fff;
+            box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.25);
+        }
+
+        .newsletter-form .btn {
+            border-radius: 25px;
+            padding: 0.5rem 1.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .newsletter-form .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .payment-methods i {
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .payment-methods i:hover {
+            transform: scale(1.2);
+            color: #fff !important;
+        }
+
+        /* Responsive Footer */
+        @media (max-width: 768px) {
+            .footer {
+                padding: 40px 0 20px;
+            }
+
+            .footer-brand h4 {
+                font-size: 1.5rem;
+            }
+
+            .newsletter-section {
+                padding: 1.5rem;
+            }
+
+            .newsletter-form {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .newsletter-form input {
+                width: 100%;
+            }
         }
 
         .cart-badge {
@@ -474,27 +737,152 @@
     <footer class="footer">
         <div class="container">
             <div class="row">
-                <div class="col-md-4">
-                    <h5><strong>ESPEE</strong></h5>
-                    <p>Premium sunglasses and frames for the modern lifestyle.</p>
+                <!-- Brand Section -->
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="footer-brand">
+                        <h4 class="text-white mb-3">
+                            <strong>ESPEE</strong>
+                        </h4>
+                        <p class="text-white-50 mb-4">
+                            Premium sunglasses and frames for the modern lifestyle.
+                            Discover our exclusive collection of designer eyewear.
+                        </p>
+                        <div class="social-links">
+                            <a href="#" class="social-link me-3">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                            <a href="#" class="social-link me-3">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <a href="#" class="social-link me-3">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="#" class="social-link">
+                                <i class="fab fa-youtube"></i>
+                            </a>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-4">
-                    <h6>Quick Links</h6>
-                    <ul class="list-unstyled">
-                        <li><a href="{{ route('home') }}" class="text-white-50">Home</a></li>
-                        <li><a href="{{ route('products.index') }}" class="text-white-50">Products</a></li>
-                        <li><a href="{{ route('cart.index') }}" class="text-white-50">Cart</a></li>
+
+                <!-- Quick Links -->
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h6 class="text-white mb-3">Shop</h6>
+                    <ul class="list-unstyled footer-links">
+                        <li class="mb-2">
+                            <a href="{{ route('products.index') }}" class="text-white-50">
+                                <i class="fas fa-chevron-right me-2"></i>All Products
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="{{ route('products.index', ['gender' => 'men']) }}" class="text-white-50">
+                                <i class="fas fa-chevron-right me-2"></i>Men's Collection
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="{{ route('products.index', ['gender' => 'women']) }}" class="text-white-50">
+                                <i class="fas fa-chevron-right me-2"></i>Women's Collection
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="{{ route('products.index', ['gender' => 'unisex']) }}" class="text-white-50">
+                                <i class="fas fa-chevron-right me-2"></i>Unisex Collection
+                            </a>
+                        </li>
                     </ul>
                 </div>
-                <div class="col-md-4">
-                    <h6>Contact</h6>
-                    <p class="text-white-50">Email: info@espee.com</p>
-                    <p class="text-white-50">Phone: +1 (555) 123-4567</p>
+
+                <!-- Customer Service -->
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h6 class="text-white mb-3">Support</h6>
+                    <ul class="list-unstyled footer-links">
+                        <li class="mb-2">
+                            <a href="#" class="text-white-50">
+                                <i class="fas fa-chevron-right me-2"></i>Size Guide
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="#" class="text-white-50">
+                                <i class="fas fa-chevron-right me-2"></i>Shipping Info
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="#" class="text-white-50">
+                                <i class="fas fa-chevron-right me-2"></i>Returns
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="#" class="text-white-50">
+                                <i class="fas fa-chevron-right me-2"></i>FAQ
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Contact Info -->
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <h6 class="text-white mb-3">Contact Us</h6>
+                    <div class="contact-info">
+                        <div class="contact-item mb-3">
+                            <i class="fas fa-envelope me-3 text-white"></i>
+                            <span class="text-white-50">info@espee.com</span>
+                        </div>
+                        <div class="contact-item mb-3">
+                            <i class="fas fa-phone me-3 text-white"></i>
+                            <span class="text-white-50">+1 (555) 123-4567</span>
+                        </div>
+                        <div class="contact-item mb-3">
+                            <i class="fas fa-map-marker-alt me-3 text-white"></i>
+                            <span class="text-white-50">123 Fashion Street, Style City, SC 12345</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-clock me-3 text-white"></i>
+                            <span class="text-white-50">Mon-Fri: 9AM-6PM EST</span>
+                        </div>
+                    </div>
                 </div>
             </div>
+
+            <!-- Newsletter Section -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="newsletter-section">
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <h6 class="text-white mb-2">Stay Updated</h6>
+                                <p class="text-white-50 mb-0">Subscribe to our newsletter for exclusive offers and new arrivals.</p>
+                            </div>
+                            <div class="col-md-6">
+                                <form class="newsletter-form d-flex">
+                                    <input type="email" class="form-control me-2" placeholder="Enter your email" required>
+                                    <button type="submit" class="btn btn-outline-light">
+                                        <i class="fas fa-paper-plane me-1"></i>Subscribe
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Section -->
             <hr class="my-4" style="border-color: #666;">
-            <div class="text-center">
-                <p class="mb-0">&copy; 2024 Espee. All rights reserved.</p>
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="mb-0 text-white-50">
+                        &copy; 2024 ESPEE. All rights reserved. |
+                        <a href="#" class="text-white-50 me-2">Privacy Policy</a>
+                        <a href="#" class="text-white-50">Terms of Service</a>
+                    </p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <div class="payment-methods">
+                        <span class="text-white-50 me-3">We Accept:</span>
+                        <i class="fab fa-cc-visa me-2 text-white"></i>
+                        <i class="fab fa-cc-mastercard me-2 text-white"></i>
+                        <i class="fab fa-cc-paypal me-2 text-white"></i>
+                        <i class="fab fa-cc-amex text-white"></i>
+                    </div>
+                </div>
             </div>
         </div>
     </footer>
@@ -603,6 +991,7 @@
                 }
             }
         });
+
     </script>
 
     @stack('scripts')

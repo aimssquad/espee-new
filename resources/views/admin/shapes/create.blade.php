@@ -32,7 +32,13 @@
                     @error('image')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
-                    <div class="form-text">Upload an image for this shape (optional, max 2MB)</div>
+                    <div class="form-text">
+                        <strong>Image Specifications:</strong><br>
+                        • <strong>Recommended size:</strong> 400x400 pixels (1:1 aspect ratio)<br>
+                        • <strong>Supported formats:</strong> JPG, PNG, WebP<br>
+                        • <strong>Max file size:</strong> 2MB<br>
+                        • <strong>Background:</strong> Transparent or white background recommended
+                    </div>
                 </div>
 
                 <div class="d-flex gap-2">

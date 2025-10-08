@@ -84,7 +84,12 @@
                         <label for="video_file" class="form-label">Video File</label>
                         <input type="file" class="form-control @error('video_file') is-invalid @enderror"
                                id="video_file" name="video_file" accept="video/mp4,video/webm,video/ogg">
-                        <div class="form-text">Supported formats: MP4, WebM, OGG. Max size: 100MB</div>
+                        <div class="form-text">
+                            <strong>Supported formats:</strong> MP4, WebM, OGG<br>
+                            <strong>Max file size:</strong> 100MB<br>
+                            <strong>Recommended dimensions:</strong> 1920x1080 (16:9 aspect ratio)<br>
+                            <strong>Recommended duration:</strong> 15-30 seconds for best engagement
+                        </div>
                         @error('video_file')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror

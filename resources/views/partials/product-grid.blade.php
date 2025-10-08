@@ -38,7 +38,20 @@
 </div>
 
 @if($products instanceof \Illuminate\Pagination\LengthAwarePaginator && $products->hasPages())
-<div class="mt-4">
-    {{ $products->withQueryString()->links('pagination::bootstrap-5') }}
+<div class="pagination-section mt-5">
+    <div class="d-flex justify-content-between align-items-center flex-wrap">
+        <!-- Pagination Info -->
+        <div class="pagination-info">
+            <span class="text-muted">
+                <i class="fas fa-list me-1"></i>
+                Showing <strong>{{ $products->firstItem() ?? 0 }}</strong> to <strong>{{ $products->lastItem() ?? 0 }}</strong> of <strong>{{ $products->total() }}</strong> products
+            </span>
+        </div>
+
+        <!-- Pagination Controls -->
+        <div class="pagination-wrapper">
+            {{ $products->withQueryString()->links('pagination::bootstrap-5') }}
+        </div>
+    </div>
 </div>
 @endif

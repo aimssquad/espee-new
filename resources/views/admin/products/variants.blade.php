@@ -166,7 +166,14 @@
                             <label for="images" class="form-label">Images (Multiple)</label>
                             <input type="file" class="form-control @error('images.*') is-invalid @enderror"
                                    id="images" name="images[]" accept="image/*" multiple>
-                            <div class="form-text">You can select multiple images. The first image will be set as primary.</div>
+                            <div class="form-text">
+                                <strong>Product Image Specifications:</strong><br>
+                                • <strong>Recommended size:</strong> 800x800 pixels (1:1 aspect ratio)<br>
+                                • <strong>Supported formats:</strong> JPG, PNG, WebP<br>
+                                • <strong>Max file size:</strong> 5MB per image<br>
+                                • <strong>Multiple images:</strong> You can select multiple images. The first image will be set as primary.<br>
+                                • <strong>Background:</strong> White or transparent background recommended
+                            </div>
                             @error('images.*')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -226,7 +233,14 @@
                         <div class="mb-3">
                             <label for="edit_images" class="form-label">Images (Multiple)</label>
                             <input type="file" class="form-control" id="edit_images" name="images[]" accept="image/*" multiple>
-                            <div class="form-text">You can select multiple images. The first image will be set as primary.</div>
+                            <div class="form-text">
+                                <strong>Product Image Specifications:</strong><br>
+                                • <strong>Recommended size:</strong> 800x800 pixels (1:1 aspect ratio)<br>
+                                • <strong>Supported formats:</strong> JPG, PNG, WebP<br>
+                                • <strong>Max file size:</strong> 5MB per image<br>
+                                • <strong>Multiple images:</strong> You can select multiple images. The first image will be set as primary.<br>
+                                • <strong>Background:</strong> White or transparent background recommended
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">

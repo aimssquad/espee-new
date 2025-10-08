@@ -23,6 +23,7 @@ class ShapeController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:shapes',
+            'slug' => 'nullable|string|max:255|unique:shapes',
             'image' => 'nullable|image|max:2048',
         ]);
 
@@ -45,6 +46,7 @@ class ShapeController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:shapes,name,' . $shape->id,
+            'slug' => 'nullable|string|max:255|unique:shapes,slug,' . $shape->id,
             'image' => 'nullable|image|max:2048',
         ]);
 

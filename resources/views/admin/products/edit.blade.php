@@ -138,4 +138,103 @@
             </form>
         </div>
     </div>
+
+    <!-- Product Highlights Section (Separate Card) -->
+    <div class="card mt-4">
+        <div class="card-header">
+            <h5 class="mb-0">Product Highlights (Zigzag Sections)</h5>
+        </div>
+        <div class="card-body">
+            @if(session('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            @endif
+
+            @if(session('error'))
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ session('error') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            @endif
+
+            <form action="{{ route('admin.products.highlights.store', $product) }}" method="POST" enctype="multipart/form-data" class="mb-4">
+                @csrf
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Title *</label>
+                        <input type="text" name="title" class="form-control" placeholder="e.g., Premium Build Quality" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Position</label>
+                        <input type="number" name="position" class="form-control" value="{{ ($product->highlights->max('position') ?? -1) + 1 }}" min="0">
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Text</label>
+                        <textarea name="text" class="form-control" rows="3" placeholder="Short description..."></textarea>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Image</label>
+                        <input type="file" name="image" class="form-control" accept="image/*">
+                        <div class="form-text">Recommended: 900x600px, JPG/PNG/WebP, max 3MB</div>
+                    </div>
+                    <div class="col-md-6 d-flex align-items-end">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="is_active" id="is_active" value="1" checked>
+                            <label class="form-check-label" for="is_active">Active</label>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-plus me-1"></i>Add Highlight</button>
+                    </div>
+                </div>
+            </form>
+
+            @if($product->highlights && $product->highlights->count())
+            <div class="table-responsive">
+                <table class="table table-bordered align-middle">
+                    <thead>
+                        <tr>
+                            <th style="width: 80px;">#</th>
+                            <th>Preview</th>
+                            <th>Title</th>
+                            <th>Text</th>
+                            <th>Active</th>
+                            <th style="width: 120px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($product->highlights->sortBy('position') as $hl)
+                        <tr>
+                            <td>{{ $hl->position }}</td>
+                            <td style="width: 140px;">
+                                <img src="{{ $hl->image_url }}" class="img-fluid rounded" alt="hl" style="width: 120px; height: 80px; object-fit: cover;">
+                            </td>
+                            <td>{{ $hl->title }}</td>
+                            <td class="text-muted" style="max-width: 360px;">{{ Str::limit($hl->text, 120) }}</td>
+                            <td>
+                                @if($hl->is_active)
+                                    <span class="badge bg-success">Active</span>
+                                @else
+                                    <span class="badge bg-secondary">Inactive</span>
+                                @endif
+                            </td>
+                            <td>
+                                <form action="{{ route('admin.products.highlights.destroy', $hl) }}" method="POST" onsubmit="return confirm('Delete this highlight?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+            @endif
+        </div>
+    </div>
+        </div>
+    </div>
 @endsection

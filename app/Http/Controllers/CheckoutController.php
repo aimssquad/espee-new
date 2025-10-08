@@ -307,15 +307,22 @@ class CheckoutController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
 
+            // Log the error for debugging
+            \Log::error('Order creation failed: ' . $e->getMessage(), [
+                'exception' => $e,
+                'request_data' => $validated,
+                'cart' => $cart
+            ]);
+
             if (request()->ajax()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'An error occurred while processing your order. Please try again.'
+                    'message' => 'An error occurred while processing your order: ' . $e->getMessage()
                 ], 500);
             }
 
             return redirect()->route('cart.index')
-                ->with('error', 'An error occurred while processing your order. Please try again.');
+                ->with('error', 'An error occurred while processing your order: ' . $e->getMessage());
         }
     }
 

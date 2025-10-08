@@ -14,12 +14,12 @@ class VideoSettingSeeder extends Seeder
     public function run(): void
     {
         VideoSetting::create([
-            'title' => 'Discover Premium Eyewear',
-            'description' => 'Explore our exclusive collection of premium sunglasses and frames designed for the modern lifestyle.',
+            'title' => 'ELEVATE YOUR STYLE',
+            'description' => 'Discover our premium collection of designer sunglasses and optical frames. Crafted with precision and style for the modern lifestyle.',
             'video_type' => 'youtube',
-            'youtube_url' => 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', // Sample YouTube URL
-            'button_text' => 'Shop Now',
-            'button_url' => null, // Will redirect to products page
+            'youtube_url' => 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', // Sample YouTube URL - replace with actual video
+            'button_text' => 'EXPLORE COLLECTION',
+            'button_url' => '/products', // Will redirect to products page
             'is_active' => true,
             'autoplay' => true,
             'muted' => true,

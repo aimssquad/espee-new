@@ -159,6 +159,11 @@
                             </a>
                         </div>
                         <div class="col-md-3 mb-2">
+                            <a href="{{ route('admin.video-settings.index') }}" class="btn btn-outline-info w-100">
+                                <i class="fas fa-video me-2"></i>Video Banner
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-2">
                             <a href="{{ route('admin.users.index') }}" class="btn btn-outline-primary w-100">
                                 <i class="fas fa-users me-2"></i>Users
                             </a>

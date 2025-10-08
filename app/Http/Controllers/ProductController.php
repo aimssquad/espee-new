@@ -41,7 +41,14 @@ class ProductController extends Controller
 
         // Filter by shape
         if ($request->filled('shape')) {
-            $query->where('shape_id', $request->shape);
+            if (is_numeric($request->shape)) {
+                $query->where('shape_id', $request->shape);
+            } else {
+                $shape = Shape::where('slug', $request->shape)->first();
+                if ($shape) {
+                    $query->where('shape_id', $shape->id);
+                }
+            }
         }
 
         // Filter by color
@@ -119,9 +126,16 @@ class ProductController extends Controller
         return view('products.index', compact('products', 'categories', 'shapes', 'colors'));
     }
 
-    public function show(Product $product)
+    public function show($product)
     {
-        $product->load(['variants.color', 'variants.images', 'category', 'subcategory', 'shape']);
+        // Handle both ID and slug-based routing
+        if (is_numeric($product)) {
+            $product = Product::findOrFail($product);
+        } else {
+            $product = Product::where('slug', $product)->firstOrFail();
+        }
+
+        $product->load(['variants.color', 'variants.images', 'category', 'subcategory', 'shape', 'highlights']);
 
         $relatedProducts = Product::with(['variants.color', 'variants.images'])
             ->where('category_id', $product->category_id)
@@ -130,6 +144,7 @@ class ProductController extends Controller
             ->limit(4)
             ->get();
 
-        return view('products.show', compact('product', 'relatedProducts'));
+        $highlights = $product->highlights()->where('is_active', true)->orderBy('position')->get();
+        return view('products.show', compact('product', 'relatedProducts', 'highlights'));
     }
 }

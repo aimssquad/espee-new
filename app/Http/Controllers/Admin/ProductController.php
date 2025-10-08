@@ -74,6 +74,7 @@ class ProductController extends Controller
                 'shape_id' => 'nullable|exists:shapes,id',
                 'gender' => 'required|in:men,women,unisex',
                 'name' => 'required|string|max:255',
+                'slug' => 'nullable|string|max:255|unique:products',
                 'model_no' => 'required|string|unique:products',
                 'description' => 'nullable|string',
                 'base_price' => 'required|numeric|min:0',
@@ -97,7 +98,7 @@ class ProductController extends Controller
         $shapes = Shape::all();
         $colors = Color::all();
         $genderOptions = Product::getGenderOptions();
-        $product->load('variants.color');
+        $product->load(['variants.color', 'highlights']);
 
         return view('admin.products.edit', compact('product', 'categories', 'subcategories', 'shapes', 'colors', 'genderOptions'));
     }
@@ -110,6 +111,7 @@ class ProductController extends Controller
             'shape_id' => 'nullable|exists:shapes,id',
             'gender' => 'required|in:men,women,unisex',
             'name' => 'required|string|max:255',
+            'slug' => 'nullable|string|max:255|unique:products,slug,' . $product->id,
             'model_no' => 'required|string|unique:products,model_no,' . $product->id,
             'description' => 'nullable|string',
             'base_price' => 'required|numeric|min:0',

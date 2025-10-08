@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\VideoSetting;
 
 class HomeController extends Controller
 {
@@ -18,6 +19,8 @@ class HomeController extends Controller
             ->limit(8)
             ->get();
 
-        return view('home', compact('featuredCategories', 'featuredProducts'));
+        $videoSetting = VideoSetting::where('is_active', true)->first();
+
+        return view('home', compact('featuredCategories', 'featuredProducts', 'videoSetting'));
     }
 }

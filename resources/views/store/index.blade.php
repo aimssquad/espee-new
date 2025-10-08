@@ -115,58 +115,78 @@
 </section>
 
 <!-- Shop by Shape -->
-<section class="py-5 bg-white">
+<section class="py-5 shop-by-shape-section">
     <div class="container">
-        <div class="text-center mb-5">
-            <h2 class="display-5 fw-bold mb-3" style="color: #2c3e50;">Shop by Shape</h2>
-            <p class="lead text-muted">Find the perfect frame shape that complements your style</p>
+        <div class="section-header text-center mb-5">
+            <h2 class="section-title">Shop by Shape</h2>
+            <p class="section-subtitle">Find the perfect frame shape that complements your unique style and personality</p>
+            <div class="section-divider"></div>
         </div>
+
         <div class="row g-4">
             @foreach($shapes as $shape)
                 <div class="col-lg-3 col-md-4 col-sm-6">
-                    <div class="shape-card h-100 text-center">
-                        <div class="shape-icon-container">
-                            @if($shape->image)
-                                <img src="{{ asset('storage/' . $shape->image) }}"
-                                     alt="{{ $shape->name }}"
-                                     class="shape-image">
-                            @else
-                                <div class="shape-icon">
-                                    @switch(strtolower($shape->name))
-                                        @case('round')
-                                            <i class="fas fa-circle"></i>
-                                            @break
-                                        @case('square')
-                                            <i class="fas fa-square"></i>
-                                            @break
-                                        @case('oval')
-                                            <i class="fas fa-egg"></i>
-                                            @break
-                                        @case('cat-eye')
-                                            <i class="fas fa-eye"></i>
-                                            @break
-                                        @case('aviator')
-                                            <i class="fas fa-plane"></i>
-                                            @break
-                                        @case('wayfarer')
-                                            <i class="fas fa-glasses"></i>
-                                            @break
-                                        @case('rectangular')
-                                            <i class="fas fa-square-full"></i>
-                                            @break
-                                        @case('oversized')
-                                            <i class="fas fa-expand-arrows-alt"></i>
-                                            @break
-                                        @default
-                                            <i class="fas fa-glasses"></i>
-                                    @endswitch
-                                </div>
-                            @endif
+                    <div class="modern-shape-card">
+                        <div class="shape-card-header">
+                            <div class="shape-icon-wrapper">
+                                @if($shape->image)
+                                    <img src="{{ asset('storage/' . $shape->image) }}"
+                                         alt="{{ $shape->name }}"
+                                         class="shape-image">
+                                @else
+                                    <div class="shape-icon">
+                                        @switch(strtolower($shape->name))
+                                            @case('round')
+                                                <i class="fas fa-circle"></i>
+                                                @break
+                                            @case('square')
+                                                <i class="fas fa-square"></i>
+                                                @break
+                                            @case('oval')
+                                                <i class="fas fa-egg"></i>
+                                                @break
+                                            @case('cat-eye')
+                                                <i class="fas fa-eye"></i>
+                                                @break
+                                            @case('aviator')
+                                                <i class="fas fa-plane"></i>
+                                                @break
+                                            @case('wayfarer')
+                                                <i class="fas fa-glasses"></i>
+                                                @break
+                                            @case('rectangular')
+                                                <i class="fas fa-square-full"></i>
+                                                @break
+                                            @case('oversized')
+                                                <i class="fas fa-expand-arrows-alt"></i>
+                                                @break
+                                            @default
+                                                <i class="fas fa-glasses"></i>
+                                        @endswitch
+                                    </div>
+                                @endif
+                            </div>
+                            <div class="shape-badge">Popular</div>
                         </div>
-                        <div class="shape-content">
+
+                        <div class="shape-card-body">
                             <h4 class="shape-title">{{ $shape->name }}</h4>
                             <p class="shape-description">{{ $shape->description ?: 'Discover our collection of ' . strtolower($shape->name) . ' frames' }}</p>
-                            <a href="{{ route('products.index', ['shape' => $shape->id]) }}" class="btn shape-btn">
+
+                            <div class="shape-features">
+                                <div class="feature-item">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>UV Protection</span>
+                                </div>
+                                <div class="feature-item">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>Premium Quality</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="shape-card-footer">
+                            <a href="{{ route('products.shape', $shape->slug) }}" class="modern-shape-btn">
                                 <span>Shop {{ $shape->name }}</span>
                                 <i class="fas fa-arrow-right"></i>
                             </a>
@@ -174,6 +194,12 @@
                     </div>
                 </div>
             @endforeach
+        </div>
+
+        <div class="text-center mt-5">
+            <a href="{{ route('products.index') }}" class="btn btn-outline-dark btn-lg view-all-btn">
+                <i class="fas fa-glasses me-2"></i>View All Shapes
+            </a>
         </div>
     </div>
 </section>

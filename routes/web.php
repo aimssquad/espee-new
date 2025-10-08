@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StoreController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
@@ -21,9 +22,12 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ExcelUploadController;
 
 // Public routes
-Route::get('/', [StoreController::class, 'index'])->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
+
+// SEO-friendly shape routes
+Route::get('/products/shape/{shape}', [ProductController::class, 'index'])->name('products.shape');
 
 // Cart routes
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
@@ -74,6 +78,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::post('products/{product}/variants', [AdminProductController::class, 'addVariant'])->name('products.add-variant');
     Route::put('products/{product}/variants/{variant}', [AdminProductController::class, 'updateVariant'])->name('products.update-variant');
     Route::delete('products/{product}/variants/{variant}', [AdminProductController::class, 'deleteVariant'])->name('products.delete-variant');
+
+    // Product Highlights (simple add/delete)
+    Route::post('products/{product}/highlights', [\App\Http\Controllers\Admin\ProductHighlightController::class, 'store'])->name('products.highlights.store');
+    Route::delete('highlights/{highlight}', [\App\Http\Controllers\Admin\ProductHighlightController::class, 'destroy'])->name('products.highlights.destroy');
 
     // Product Images
     Route::delete('product-images/{image}', [AdminProductController::class, 'deleteImage'])->name('products.delete-image');

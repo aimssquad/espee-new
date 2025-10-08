@@ -7,24 +7,29 @@
     <div class="row">
         <div class="col-lg-6">
             <!-- Product Images -->
+            @php
+                $initialVariant = method_exists($product, 'defaultVariant') && $product->defaultVariant()
+                    ? $product->defaultVariant()
+                    : $product->variants->first();
+            @endphp
             <div id="product-carousel" class="carousel slide" data-bs-ride="carousel">
                 <div class="carousel-inner" id="main-carousel">
                     @php $imageIndex = 0; @endphp
-                    @foreach($product->variants as $variant)
-                        @if($variant->images->count() > 0)
-                            @foreach($variant->images as $image)
-                                <div class="carousel-item {{ $imageIndex === 0 ? 'active' : '' }}" data-variant-id="{{ $variant->id }}">
-                                    <img src="{{ $image->image_url }}" class="d-block w-100" alt="{{ $product->name }}" style="height: 500px; object-fit: cover;">
+                    @if($initialVariant)
+                        @if($initialVariant->images->count() > 0)
+                            @foreach($initialVariant->images as $image)
+                                <div class="carousel-item {{ $imageIndex === 0 ? 'active' : '' }}" data-variant-id="{{ $initialVariant->id }}">
+                                    <img src="{{ $image->image_url ?? 'https://via.placeholder.com/1000x700/000000/FFFFFF?text=Product+Image' }}" class="d-block w-100" alt="{{ $product->name }}" style="height: 500px; object-fit: cover;">
                                 </div>
                                 @php $imageIndex++; @endphp
                             @endforeach
                         @else
-                            <div class="carousel-item {{ $imageIndex === 0 ? 'active' : '' }}" data-variant-id="{{ $variant->id }}">
-                                <img src="{{ $variant->image_url }}" class="d-block w-100" alt="{{ $product->name }}" style="height: 500px; object-fit: cover;">
+                            <div class="carousel-item active" data-variant-id="{{ $initialVariant->id }}">
+                                <img src="{{ $initialVariant->image_url ?? 'https://via.placeholder.com/1000x700/000000/FFFFFF?text=Product+Image' }}" class="d-block w-100" alt="{{ $product->name }}" style="height: 500px; object-fit: cover;">
                             </div>
                             @php $imageIndex++; @endphp
                         @endif
-                    @endforeach
+                    @endif
                 </div>
                 @if($imageIndex > 1)
                 <button class="carousel-control-prev" type="button" data-bs-target="#product-carousel" data-bs-slide="prev">
@@ -40,10 +45,10 @@
             <div class="mt-3">
                 <div class="d-flex flex-wrap gap-2" id="image-thumbnails">
                     @php $thumbIndex = 0; @endphp
-                    @foreach($product->variants as $variant)
-                        @if($variant->images->count() > 0)
-                            @foreach($variant->images as $image)
-                                <img src="{{ $image->image_url }}"
+                    @if($initialVariant)
+                        @if($initialVariant->images->count() > 0)
+                            @foreach($initialVariant->images as $image)
+                                <img src="{{ $image->image_url ?? 'https://via.placeholder.com/200x200/000000/FFFFFF?text=Thumb' }}"
                                      class="img-thumbnail {{ $thumbIndex === 0 ? 'active' : '' }}"
                                      style="width: 60px; height: 60px; object-fit: cover; cursor: pointer;"
                                      data-bs-target="#product-carousel"
@@ -52,15 +57,15 @@
                                 @php $thumbIndex++; @endphp
                             @endforeach
                         @else
-                            <img src="{{ $variant->image_url }}"
-                                 class="img-thumbnail {{ $thumbIndex === 0 ? 'active' : '' }}"
+                            <img src="{{ $initialVariant->image_url ?? 'https://via.placeholder.com/200x200/000000/FFFFFF?text=Thumb' }}"
+                                 class="img-thumbnail active"
                                  style="width: 60px; height: 60px; object-fit: cover; cursor: pointer;"
                                  data-bs-target="#product-carousel"
-                                 data-bs-slide-to="{{ $thumbIndex }}"
+                                 data-bs-slide-to="0"
                                  alt="{{ $product->name }}">
                             @php $thumbIndex++; @endphp
                         @endif
-                    @endforeach
+                    @endif
                 </div>
             </div>
 
@@ -70,9 +75,10 @@
                 <h6>Available Colors:</h6>
                 <div class="d-flex flex-wrap gap-2">
                     @foreach($product->variants as $variant)
-                    <button class="btn btn-outline-secondary color-variant"
+                    <button class="btn {{ ($initialVariant && $variant->id === $initialVariant->id) ? 'btn-primary' : 'btn-outline-secondary' }} color-variant"
                             data-variant-id="{{ $variant->id }}"
                             data-price="{{ $variant->price }}"
+                            data-stock="{{ $variant->stock ?? 0 }}"
                             data-images="{{ $variant->images->pluck('image_url')->toJson() }}"
                             data-image="{{ $variant->image_url }}"
                             style="width: 40px; height: 40px; background-color: {{ $variant->color->hex_code }}; border-radius: 50%;">
@@ -88,7 +94,7 @@
             <p class="text-muted">{{ $product->model_no }}</p>
 
             <div class="price mb-3">
-                <span id="current-price" class="h4">₹{{ number_format($product->variants->first()->price ?? $product->base_price, 2) }}</span>
+                <span id="current-price" class="h4">₹{{ number_format(($initialVariant->price ?? $product->base_price), 2) }}</span>
             </div>
 
             <div class="mb-4">
@@ -112,24 +118,39 @@
             <!-- Add to Cart Form -->
             <form id="add-to-cart-form">
                 @csrf
-                <input type="hidden" name="variant_id" id="selected-variant" value="{{ $product->variants->first()->id ?? '' }}">
+                <input type="hidden" name="variant_id" id="selected-variant" value="{{ $initialVariant->id ?? '' }}">
 
                 <div class="row mb-3">
                     <div class="col-4">
                         <label for="quantity" class="form-label">Quantity</label>
-                        <input type="number" class="form-control" id="quantity" name="quantity" value="1" min="1" max="{{ $product->variants->first()->stock ?? 0 }}">
+                        <input type="number" class="form-control" id="quantity" name="quantity" value="1" min="1" max="{{ $initialVariant->stock ?? 0 }}">
                     </div>
                     <div class="col-8">
-                        <label class="form-label">Stock</label>
-                        <div id="stock-info" class="form-control-plaintext">
-                            {{ $product->variants->first()->stock ?? 0 }} available
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <label class="form-label mb-1">Stock</label>
+                                <div id="stock-info" class="form-control-plaintext p-0">
+                                    {{ $initialVariant->stock ?? 0 }} available
+                                </div>
+                            </div>
+                            <div>
+                                <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#sizeChartModal">
+                                    <i class="fas fa-ruler-combined me-1"></i> Size Chart
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary btn-lg w-100" id="add-to-cart-btn">
-                    <i class="fas fa-shopping-cart me-2"></i>Add to Cart
-                </button>
+                <div class="d-grid gap-2 d-md-flex">
+                    <button type="submit" class="btn btn-primary btn-lg flex-fill" id="add-to-cart-btn">
+                        <i class="fas fa-shopping-cart me-2"></i>Add to Cart
+                    </button>
+                    <button type="button" class="btn btn-dark btn-lg flex-fill" id="buy-now-btn">
+                        <i class="fas fa-bolt me-2"></i>Buy Now
+                    </button>
+                </div>
+
             </form>
 
             <!-- Product Features -->
@@ -181,6 +202,29 @@
     </div>
     @endif
 </div>
+
+<!-- Product Highlights (Zigzag Sections) -->
+@if(isset($highlights) && $highlights->count())
+<div class="container py-5">
+    <div class="product-highlights">
+        @foreach($highlights as $i => $section)
+        <div class="row align-items-center g-4 mb-5 {{ $i % 2 === 1 ? 'flex-row-reverse' : '' }}">
+            <div class="col-lg-6">
+                <img src="{{ $section->image_url }}" class="img-fluid rounded-3 shadow-sm w-100" alt="{{ $section->title }}" style="object-fit: cover; height: 420px;">
+            </div>
+            <div class="col-lg-6">
+                @if($section->title)
+                <h3 class="fw-bold mb-3">{{ $section->title }}</h3>
+                @endif
+                @if($section->text)
+                <p class="lead text-muted">{{ $section->text }}</p>
+                @endif
+            </div>
+        </div>
+        @endforeach
+    </div>
+</div>
+@endif
 @endsection
 
 @push('scripts')
@@ -204,10 +248,11 @@ $(document).ready(function() {
             updateCarouselWithImages(images);
         } else {
             // Fallback to single image
-            $('.carousel-item.active img').attr('src', image);
+            const fallback = image || 'https://via.placeholder.com/1000x700/000000/FFFFFF?text=Product+Image';
+            $('.carousel-item.active img').attr('src', fallback);
         }
 
-        // Update stock info
+        // Update stock info and quantity max based on selected variant
         updateStockInfo(variantId);
     });
 
@@ -224,14 +269,14 @@ $(document).ready(function() {
             const isActive = index === 0 ? 'active' : '';
             const carouselItem = `
                 <div class="carousel-item ${isActive}">
-                    <img src="${imageUrl}" class="d-block w-100" alt="{{ $product->name }}" style="height: 500px; object-fit: cover;">
+                    <img src="${imageUrl || 'https://via.placeholder.com/1000x700/000000/FFFFFF?text=Product+Image'}" class="d-block w-100" alt="{{ $product->name }}" style="height: 500px; object-fit: cover;">
                 </div>
             `;
             carouselInner.append(carouselItem);
 
             // Add thumbnail
             const thumbnail = `
-                <img src="${imageUrl}"
+                <img src="${imageUrl || 'https://via.placeholder.com/200x200/000000/FFFFFF?text=Thumb'}"
                      class="img-thumbnail ${isActive}"
                      style="width: 60px; height: 60px; object-fit: cover; cursor: pointer;"
                      data-bs-target="#product-carousel"
@@ -274,12 +319,56 @@ $(document).ready(function() {
     });
 
     function updateStockInfo(variantId) {
-        // This would typically make an AJAX call to get stock info
-        // For now, we'll just show a placeholder
-        $('#stock-info').text('Stock information loading...');
+        const variantButton = $(`.color-variant[data-variant-id='${variantId}']`);
+        const stock = parseInt(variantButton.data('stock')) || 0;
+        $('#stock-info').text(`${stock} available`);
+        $('#quantity').attr('max', stock);
     }
 
     // showToast function is now available globally from app layout
+
+    // Buy Now: add to cart then go to checkout
+    $('#buy-now-btn').on('click', function() {
+        const form = $('#add-to-cart-form');
+        const formData = form.serialize();
+
+        $.ajax({
+            url: '{{ route("cart.add") }}',
+            method: 'POST',
+            data: formData,
+            success: function(response) {
+                if (response.success) {
+                    window.location.href = '{{ route("checkout.index") }}';
+                } else {
+                    showToast('error', response.message || 'Unable to proceed to checkout');
+                }
+            },
+            error: function(xhr) {
+                const response = xhr.responseJSON || {};
+                showToast('error', response.message || 'Unable to proceed to checkout');
+            }
+        });
+    });
 });
 </script>
+@endpush
+
+@push('modals')
+<!-- Size Chart Modal -->
+<div class="modal fade" id="sizeChartModal" tabindex="-1" aria-labelledby="sizeChartLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="sizeChartLabel">Size Chart</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0">
+                <img src="https://via.placeholder.com/1000x700?text=Size+Chart" alt="Size Chart" class="img-fluid w-100" style="display:block;">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+    </div>
 @endpush

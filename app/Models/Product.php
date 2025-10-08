@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 
 class Product extends Model
 {
@@ -17,6 +18,7 @@ class Product extends Model
         'shape_id',
         'gender',
         'name',
+        'slug',
         'model_no',
         'description',
         'base_price'
@@ -25,6 +27,31 @@ class Product extends Model
     protected $casts = [
         'base_price' => 'decimal:2',
     ];
+
+    /**
+     * Get the route key for the model.
+     */
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($product) {
+            if (empty($product->slug)) {
+                $product->slug = Str::slug($product->name);
+            }
+        });
+
+        static::updating(function ($product) {
+            if ($product->isDirty('name') && empty($product->slug)) {
+                $product->slug = Str::slug($product->name);
+            }
+        });
+    }
 
     public function category(): BelongsTo
     {
@@ -44,6 +71,11 @@ class Product extends Model
     public function variants(): HasMany
     {
         return $this->hasMany(ProductVariant::class);
+    }
+
+    public function highlights(): HasMany
+    {
+        return $this->hasMany(ProductHighlight::class)->orderBy('position');
     }
 
     public function defaultVariant()

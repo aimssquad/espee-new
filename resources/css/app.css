@@ -10,6 +10,404 @@
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
 
+/* Video Section Styling */
+.video-section {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.video-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="%23000" opacity="0.02"/><circle cx="75" cy="75" r="1" fill="%23000" opacity="0.02"/><circle cx="50" cy="10" r="0.5" fill="%23000" opacity="0.03"/><circle cx="10" cy="50" r="0.5" fill="%23000" opacity="0.03"/><circle cx="90" cy="30" r="0.5" fill="%23000" opacity="0.02"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    pointer-events: none;
+}
+
+.video-container {
+    position: relative;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.video-container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+}
+
+.video-wrapper {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.video-wrapper iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 15px;
+}
+
+.video-placeholder {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+}
+
+.video-placeholder:hover {
+    transform: scale(1.02);
+}
+
+.video-section .display-5 {
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, #000 0%, #333 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.video-section .lead {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #555;
+}
+
+.video-section .btn-lg {
+    padding: 12px 30px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.video-section .btn-primary {
+    background: linear-gradient(135deg, #000 0%, #333 100%);
+    border-color: #000;
+}
+
+.video-section .btn-primary:hover {
+    background: linear-gradient(135deg, #333 0%, #000 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Enhanced Product Cards */
+.product-card {
+    transition: all 0.3s ease;
+    border: 1px solid #e9ecef;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.product-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    border-color: #000;
+}
+
+.product-image-container {
+    overflow: hidden;
+    position: relative;
+}
+
+.product-image-container img {
+    transition: transform 0.3s ease;
+}
+
+.product-card:hover .product-image-container img {
+    transform: scale(1.05);
+}
+
+/* Product Overlay Actions */
+.product-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(2px);
+}
+
+.product-card:hover .product-overlay {
+    opacity: 1;
+}
+
+.product-actions {
+    display: flex;
+    gap: 10px;
+    transform: translateY(20px);
+    transition: transform 0.3s ease;
+}
+
+.product-card:hover .product-actions {
+    transform: translateY(0);
+}
+
+.action-btn {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.9);
+    color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.action-btn:hover {
+    background: #000;
+    color: #fff;
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.action-btn i {
+    font-size: 16px;
+}
+
+/* Color Options Styling */
+.color-options {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.color-swatch {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.color-swatch:hover {
+    transform: scale(1.2);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Add to Cart Button Animation */
+.add-to-cart-btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.add-to-cart-btn:before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: all 0.3s ease;
+}
+
+.add-to-cart-btn:active:before {
+    width: 100px;
+    height: 100px;
+}
+
+/* Stock Status Styling */
+.price .text-success {
+    font-weight: 600;
+}
+
+.price .text-danger {
+    font-weight: 600;
+}
+
+/* Responsive Product Cards */
+@media (max-width: 768px) {
+    .product-actions {
+        gap: 8px;
+    }
+
+    .action-btn {
+        width: 40px;
+        height: 40px;
+    }
+
+    .action-btn i {
+        font-size: 14px;
+    }
+
+    .product-card:hover {
+        transform: translateY(-4px);
+    }
+}
+
+/* Loading State for Add to Cart */
+.add-to-cart-btn.loading {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.add-to-cart-btn.loading i {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Enhanced Pagination Styling */
+.pagination-section {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-top: 2rem;
+    border: 1px solid #e9ecef;
+}
+
+.pagination-wrapper .pagination {
+    margin: 0;
+    gap: 0.25rem;
+}
+
+.pagination-wrapper .pagination .page-item {
+    margin: 0;
+}
+
+.pagination-wrapper .pagination .page-link {
+    border: 1px solid #dee2e6;
+    color: #495057;
+    background-color: #fff;
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    min-width: 40px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.pagination-wrapper .pagination .page-link:hover {
+    background-color: #000;
+    border-color: #000;
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.pagination-wrapper .pagination .page-item.active .page-link {
+    background-color: #000;
+    border-color: #000;
+    color: #fff;
+    font-weight: 600;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.pagination-wrapper .pagination .page-item.disabled .page-link {
+    background-color: #f8f9fa;
+    border-color: #dee2e6;
+    color: #6c757d;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.pagination-wrapper .pagination .page-item.disabled .page-link:hover {
+    transform: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    background-color: #f8f9fa;
+    border-color: #dee2e6;
+    color: #6c757d;
+}
+
+.pagination-wrapper .pagination .page-link i {
+    font-size: 0.875rem;
+}
+
+/* Pagination Info Styling */
+.pagination-info {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+.pagination-info strong {
+    color: #000;
+    font-weight: 600;
+}
+
+.pagination-info i {
+    color: #000;
+}
+
+/* Responsive Pagination */
+@media (max-width: 768px) {
+    .pagination-section {
+        padding: 1rem;
+        margin-top: 1.5rem;
+    }
+
+    .pagination-wrapper .pagination {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.125rem;
+    }
+
+    .pagination-wrapper .pagination .page-link {
+        padding: 0.375rem 0.5rem;
+        min-width: 35px;
+        font-size: 0.875rem;
+    }
+
+    .pagination-info {
+        text-align: center;
+        margin-bottom: 1rem;
+        width: 100%;
+    }
+
+    .d-flex.justify-content-between {
+        flex-direction: column;
+        align-items: center !important;
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .pagination-wrapper .pagination .page-link {
+        padding: 0.25rem 0.375rem;
+        min-width: 30px;
+        font-size: 0.8rem;
+    }
+
+    .pagination-info {
+        font-size: 0.8rem;
+    }
+}
+
 /* Simple Gender Cards Styling */
 .gender-card-simple {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -216,128 +614,265 @@
     }
 }
 
-/* Shape Cards Styling - Proper Card Design */
-.shape-card {
-    background: #fff;
-    border: 1px solid #e0e0e0;
-    border-radius: 12px;
-    padding: 2rem 1.5rem;
+/* Modern Shop by Shape Section - Updated 2024 */
+.shop-by-shape-section {
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.shop-by-shape-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="%23e9ecef" opacity="0.3"/><circle cx="75" cy="75" r="1" fill="%23e9ecef" opacity="0.3"/><circle cx="50" cy="10" r="0.5" fill="%23e9ecef" opacity="0.2"/><circle cx="10" cy="60" r="0.5" fill="%23e9ecef" opacity="0.2"/><circle cx="90" cy="40" r="0.5" fill="%23e9ecef" opacity="0.2"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    opacity: 0.5;
+    z-index: 1;
+}
+
+.shop-by-shape-section .container {
+    position: relative;
+    z-index: 2;
+}
+
+.section-header {
+    margin-bottom: 4rem;
+}
+
+.section-title {
+    font-size: 3rem;
+    font-weight: 800;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    position: relative;
+    display: inline-block;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    border-radius: 2px;
+}
+
+.section-subtitle {
+    font-size: 1.2rem;
+    color: #6c757d;
+    margin: 0;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+.section-divider {
+    width: 100px;
+    height: 3px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    margin: 2rem auto 0;
+    border-radius: 2px;
+}
+
+/* Modern Shape Cards */
+.modern-shape-card {
+    background: #ffffff !important;
+    border-radius: 20px !important;
+    padding: 0 !important;
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     position: relative;
     overflow: hidden;
     height: 100%;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
+    border: 1px solid #e9ecef !important;
+    backdrop-filter: blur(10px);
+    margin-bottom: 2rem;
 }
 
-.shape-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
-    border-color: #000;
+.modern-shape-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    z-index: 1;
 }
 
-.shape-icon-container {
-    margin-bottom: 1.5rem;
+.modern-shape-card:hover {
+    transform: translateY(-15px) scale(1.02);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+}
+
+.shape-card-header {
     position: relative;
-    z-index: 2;
+    padding: 2rem 2rem 1rem;
+    text-align: center;
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+}
+
+.shape-icon-wrapper {
+    position: relative;
+    margin-bottom: 1rem;
 }
 
 .shape-image {
-    width: 80px;
-    height: 80px;
+    width: 100px;
+    height: 100px;
     object-fit: contain;
     border-radius: 50%;
-    transition: all 0.3s ease;
-    border: 2px solid #e0e0e0;
-    background: #f8f9fa;
-    padding: 8px;
+    transition: all 0.4s ease;
+    border: 3px solid #e9ecef;
+    background: #ffffff;
+    padding: 15px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
 }
 
-.shape-card:hover .shape-image {
-    transform: scale(1.1);
-    border-color: #000;
+.modern-shape-card:hover .shape-image {
+    transform: scale(1.15) rotate(5deg);
+    border-color: #667eea;
+    box-shadow: 0 15px 35px rgba(102, 126, 234, 0.3);
 }
 
 .shape-icon {
-    width: 80px;
-    height: 80px;
-    background: #f8f9fa;
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 0 auto;
-    transition: all 0.3s ease;
-    border: 2px solid #e0e0e0;
+    transition: all 0.4s ease;
+    border: 3px solid #e9ecef;
     position: relative;
     overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
 }
 
-.shape-card:hover .shape-icon {
-    background: #000;
-    border-color: #000;
-    transform: scale(1.1);
+.modern-shape-card:hover .shape-icon {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-color: #667eea;
+    transform: scale(1.15) rotate(-5deg);
+    box-shadow: 0 15px 35px rgba(102, 126, 234, 0.3);
 }
 
 .shape-icon i {
-    font-size: 2rem;
-    color: #666;
-    transition: all 0.3s ease;
+    font-size: 2.5rem;
+    color: #6c757d;
+    transition: all 0.4s ease;
     position: relative;
     z-index: 2;
 }
 
-.shape-card:hover .shape-icon i {
-    color: #fff;
+.modern-shape-card:hover .shape-icon i {
+    color: #ffffff;
     transform: scale(1.1);
 }
 
-.shape-content {
+.shape-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.shape-card-body {
+    padding: 1.5rem 2rem;
     flex: 1;
     display: flex;
     flex-direction: column;
-    position: relative;
-    z-index: 2;
 }
 
 .shape-title {
-    font-size: 1.25rem;
+    font-size: 1.5rem;
     font-weight: 700;
-    color: #000;
-    margin-bottom: 0.75rem;
+    color: #2c3e50;
+    margin-bottom: 1rem;
     line-height: 1.2;
+    text-align: center;
     transition: all 0.3s ease;
 }
 
-.shape-card:hover .shape-title {
-    color: #000;
+.modern-shape-card:hover .shape-title {
+    color: #667eea;
+    transform: translateY(-2px);
 }
 
 .shape-description {
-    color: #666;
-    font-size: 0.9rem;
-    line-height: 1.5;
+    color: #6c757d;
+    font-size: 0.95rem;
+    line-height: 1.6;
     margin-bottom: 1.5rem;
+    text-align: center;
     flex: 1;
     transition: all 0.3s ease;
 }
 
-.shape-card:hover .shape-description {
-    color: #666;
+.modern-shape-card:hover .shape-description {
+    color: #495057;
 }
 
-.shape-btn {
-    background: #000;
-    color: #fff;
-    border: 2px solid #000;
-    padding: 10px 20px;
-    border-radius: 6px;
-    font-weight: 600;
+.shape-features {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     font-size: 0.85rem;
+    color: #28a745;
+    font-weight: 500;
+}
+
+.feature-item i {
+    font-size: 0.9rem;
+}
+
+.shape-card-footer {
+    padding: 0 2rem 2rem;
+    text-align: center;
+}
+
+.modern-shape-btn {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #ffffff;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 0.9rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    transition: all 0.3s ease;
+    transition: all 0.4s ease;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -345,25 +880,244 @@
     text-decoration: none;
     position: relative;
     overflow: hidden;
-    z-index: 3;
+    width: 100%;
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
 }
 
-.shape-btn:hover {
-    background: #fff;
-    color: #000;
-    border-color: #000;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+.modern-shape-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.modern-shape-btn:hover::before {
+    left: 100%;
+}
+
+.modern-shape-btn:hover {
+    background: linear-gradient(135deg, #764ba2, #667eea);
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
     text-decoration: none;
+    color: #ffffff;
 }
 
-.shape-btn i {
+.modern-shape-btn i {
     transition: all 0.3s ease;
     font-size: 0.9rem;
 }
 
-.shape-btn:hover i {
-    transform: translateX(3px);
+.modern-shape-btn:hover i {
+    transform: translateX(5px);
+}
+
+.view-all-btn {
+    padding: 1rem 2.5rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-radius: 50px;
+    border: 2px solid #2c3e50;
+    color: #2c3e50;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.view-all-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: #2c3e50;
+    transition: left 0.3s;
+    z-index: -1;
+}
+
+.view-all-btn:hover::before {
+    left: 0;
+}
+
+.view-all-btn:hover {
+    color: #ffffff;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(44, 62, 80, 0.3);
+}
+
+/* Force Card Styling */
+.shop-by-shape-section .modern-shape-card {
+    background: #ffffff !important;
+    border-radius: 20px !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
+    border: 1px solid #e9ecef !important;
+    padding: 0 !important;
+    margin-bottom: 2rem !important;
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    position: relative !important;
+    overflow: hidden !important;
+    min-height: 350px !important;
+}
+
+.shop-by-shape-section .modern-shape-card:hover {
+    transform: translateY(-15px) scale(1.02) !important;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Ensure all card elements are properly styled */
+.shop-by-shape-section .shape-card-header {
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%) !important;
+    padding: 2rem 2rem 1rem !important;
+    text-align: center !important;
+    position: relative !important;
+}
+
+.shop-by-shape-section .shape-card-body {
+    padding: 1.5rem 2rem !important;
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.shop-by-shape-section .shape-card-footer {
+    padding: 0 2rem 2rem !important;
+    text-align: center !important;
+}
+
+.shop-by-shape-section .shape-icon {
+    width: 100px !important;
+    height: 100px !important;
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%) !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 0 auto !important;
+    transition: all 0.4s ease !important;
+    border: 3px solid #e9ecef !important;
+    position: relative !important;
+    overflow: hidden !important;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1) !important;
+}
+
+.shop-by-shape-section .shape-icon i {
+    font-size: 2.5rem !important;
+    color: #6c757d !important;
+    transition: all 0.4s ease !important;
+    position: relative !important;
+    z-index: 2 !important;
+}
+
+.shop-by-shape-section .shape-title {
+    font-size: 1.5rem !important;
+    font-weight: 700 !important;
+    color: #2c3e50 !important;
+    margin-bottom: 1rem !important;
+    line-height: 1.2 !important;
+    text-align: center !important;
+    transition: all 0.3s ease !important;
+}
+
+.shop-by-shape-section .shape-description {
+    color: #6c757d !important;
+    font-size: 0.95rem !important;
+    line-height: 1.6 !important;
+    margin-bottom: 1.5rem !important;
+    text-align: center !important;
+    flex: 1 !important;
+    transition: all 0.3s ease !important;
+}
+
+.shop-by-shape-section .modern-shape-btn {
+    background: linear-gradient(135deg, #667eea, #764ba2) !important;
+    color: #ffffff !important;
+    border: none !important;
+    padding: 12px 24px !important;
+    border-radius: 25px !important;
+    font-weight: 600 !important;
+    font-size: 0.9rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    transition: all 0.4s ease !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.5rem !important;
+    text-decoration: none !important;
+    position: relative !important;
+    overflow: hidden !important;
+    width: 100% !important;
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3) !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .section-title {
+        font-size: 2.5rem;
+    }
+
+    .section-subtitle {
+        font-size: 1.1rem;
+    }
+
+    .modern-shape-card {
+        margin-bottom: 2rem;
+    }
+
+    .shape-card-header {
+        padding: 1.5rem 1.5rem 1rem;
+    }
+
+    .shape-card-body {
+        padding: 1rem 1.5rem;
+    }
+
+    .shape-card-footer {
+        padding: 0 1.5rem 1.5rem;
+    }
+
+    .shape-image,
+    .shape-icon {
+        width: 80px;
+        height: 80px;
+    }
+
+    .shape-icon i {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .section-title {
+        font-size: 2rem;
+    }
+
+    .section-subtitle {
+        font-size: 1rem;
+    }
+
+    .shape-image,
+    .shape-icon {
+        width: 70px;
+        height: 70px;
+    }
+
+    .shape-icon i {
+        font-size: 1.8rem;
+    }
+
+    .modern-shape-btn {
+        padding: 10px 20px;
+        font-size: 0.85rem;
+    }
 }
 
 /* Product Cards */
